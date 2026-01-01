@@ -1,150 +1,146 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* The Anchorage Chronicle Design System
+   Colors: Navy Blue, Forest Green, Dark Gold, Off-White, Red Alerts, Grays
 */
 
 @layer base {
   :root {
-    --background: 209 40% 96%;
-    --foreground: 222 47% 11%;
+    /* Off-white/cream background for newspaper feel */
+    --background: 40 33% 96%;
+    --foreground: 220 30% 15%;
 
-    --card: 210 40% 98%;
-    --card-foreground: 222 47% 11%;
+    /* Cream card backgrounds */
+    --card: 40 40% 98%;
+    --card-foreground: 220 30% 15%;
 
-    --popover: 214 31% 91%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 40 40% 98%;
+    --popover-foreground: 220 30% 15%;
 
-    --primary: 216 19% 26%;
-    --primary-foreground: 210 19% 98%;
+    /* Navy Blue primary */
+    --primary: 220 60% 20%;
+    --primary-foreground: 40 33% 96%;
 
-    --secondary: 215 19% 34%;
-    --secondary-foreground: 210 40% 98%;
+    /* Forest Green secondary */
+    --secondary: 150 40% 25%;
+    --secondary-foreground: 40 33% 96%;
 
-    --muted: 215 20% 65%;
-    --muted-foreground: 222 47% 11%;
+    /* Gray muted tones */
+    --muted: 220 15% 85%;
+    --muted-foreground: 220 15% 40%;
 
-    --accent: 210 40% 98%;
-    --accent-foreground: 215 16% 46%;
+    /* Dark Gold accent */
+    --accent: 43 80% 35%;
+    --accent-foreground: 40 33% 96%;
 
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 85% 97%;
+    /* Red for alerts/breaking news */
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 40 33% 98%;
 
-    --border: 212 26% 83%;
-    --input: 212 26% 83%;
-    --ring: 216 19% 26%;
+    /* Borders and inputs */
+    --border: 220 20% 80%;
+    --input: 220 20% 85%;
+    --ring: 220 60% 20%;
 
-    --radius: 0rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Sidebar */
+    --sidebar-background: 220 60% 18%;
+    --sidebar-foreground: 40 33% 96%;
+    --sidebar-primary: 43 80% 45%;
+    --sidebar-primary-foreground: 220 30% 15%;
+    --sidebar-accent: 150 40% 30%;
+    --sidebar-accent-foreground: 40 33% 96%;
+    --sidebar-border: 220 40% 30%;
+    --sidebar-ring: 43 80% 45%;
 
-    --sidebar-foreground: 222 47% 11%;
+    /* Chart colors */
+    --chart-1: 220 60% 30%;
+    --chart-2: 150 40% 35%;
+    --chart-3: 43 80% 45%;
+    --chart-4: 0 75% 50%;
+    --chart-5: 220 15% 50%;
 
-    --sidebar-primary: 216 19% 26%;
+    --sidebar: 220 60% 18%;
 
-    --sidebar-primary-foreground: 210 19% 98%;
+    /* Typography */
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
 
-    --sidebar-accent: 215 19% 34%;
-
-    --sidebar-accent-foreground: 210 40% 98%;
-
-    --sidebar-border: 212 26% 83%;
-
-    --sidebar-ring: 216 19% 26%;
-
-    --chart-1: 217 10% 64%;
-
-    --chart-2: 215 20% 65%;
-
-    --chart-3: 215 16% 46%;
-
-    --chart-4: 219 8% 46%;
-
-    --chart-5: 215 19% 34%;
-
-    --sidebar: 210 40% 98%;
-
-    --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-
-    --font-serif: 'Crimson Pro', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-
-    --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    /* Shadows */
+    --shadow-2xs: 0 1px 2px 0px hsl(220 30% 15% / 0.03);
+    --shadow-xs: 0 1px 3px 0px hsl(220 30% 15% / 0.04);
+    --shadow-sm: 0 2px 4px -1px hsl(220 30% 15% / 0.06);
+    --shadow: 0 4px 6px -1px hsl(220 30% 15% / 0.08);
+    --shadow-md: 0 6px 10px -2px hsl(220 30% 15% / 0.1);
+    --shadow-lg: 0 10px 20px -3px hsl(220 30% 15% / 0.12);
+    --shadow-xl: 0 20px 40px -4px hsl(220 30% 15% / 0.15);
+    --shadow-2xl: 0 25px 50px -6px hsl(220 30% 15% / 0.2);
 
     --tracking-normal: 0em;
-
     --spacing: 0.25rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --background: 220 35% 10%;
+    --foreground: 40 20% 92%;
 
-    --card: 217 32% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 30% 14%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 215 24% 26%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 30% 12%;
+    --popover-foreground: 40 20% 92%;
 
-    --primary: 212 26% 83%;
-    --primary-foreground: 228 84% 4%;
+    --primary: 40 33% 90%;
+    --primary-foreground: 220 35% 10%;
 
-    --secondary: 215 19% 34%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 150 35% 35%;
+    --secondary-foreground: 40 20% 92%;
 
-    --muted: 215 16% 46%;
-    --muted-foreground: 210 40% 98%;
+    --muted: 220 20% 25%;
+    --muted-foreground: 220 15% 65%;
 
-    --accent: 228 84% 4%;
-    --accent-foreground: 215 20% 65%;
+    --accent: 43 75% 50%;
+    --accent-foreground: 220 35% 10%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 85% 97%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 40 20% 95%;
 
-    --border: 215 19% 34%;
-    --input: 215 19% 34%;
-    --ring: 212 26% 83%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 212 26% 83%;
-    --sidebar-primary-foreground: 228 84% 4%;
-    --sidebar-accent: 215 20% 65%;
-    --sidebar-accent-foreground: 228 84% 4%;
-    --sidebar-border: 215 19% 34%;
-    --sidebar-ring: 212 26% 83%;
-    --chart-1: 215 12% 83%;
-    --chart-2: 212 26% 83%;
-    --chart-3: 215 20% 65%;
-    --chart-4: 217 10% 64%;
-    --chart-5: 215 16% 46%;
-    --sidebar: 217 32% 17%;
-    --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-    --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
-    --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
-    --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --border: 220 25% 25%;
+    --input: 220 25% 25%;
+    --ring: 43 75% 50%;
+
+    --sidebar-background: 220 40% 8%;
+    --sidebar-foreground: 40 20% 92%;
+    --sidebar-primary: 43 75% 50%;
+    --sidebar-primary-foreground: 220 35% 10%;
+    --sidebar-accent: 150 35% 35%;
+    --sidebar-accent-foreground: 40 20% 92%;
+    --sidebar-border: 220 30% 20%;
+    --sidebar-ring: 43 75% 50%;
+
+    --chart-1: 40 33% 85%;
+    --chart-2: 150 40% 50%;
+    --chart-3: 43 80% 55%;
+    --chart-4: 0 70% 60%;
+    --chart-5: 220 20% 60%;
+
+    --sidebar: 220 40% 8%;
+
+    --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.1);
+    --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.15);
+    --shadow-sm: 0 2px 4px -1px hsl(0 0% 0% / 0.2);
+    --shadow: 0 4px 6px -1px hsl(0 0% 0% / 0.25);
+    --shadow-md: 0 6px 10px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 20px -3px hsl(0 0% 0% / 0.35);
+    --shadow-xl: 0 20px 40px -4px hsl(0 0% 0% / 0.4);
+    --shadow-2xl: 0 25px 50px -6px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -154,6 +150,99 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-serif);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  /* Breaking news ticker animation */
+  @keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-animate {
+    animation: ticker-scroll 30s linear infinite;
+  }
+
+  .ticker-animate:hover {
+    animation-play-state: paused;
+  }
+
+  /* Fade in animation */
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  /* Pulse animation for alerts */
+  @keyframes pulse-alert {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .animate-pulse-alert {
+    animation: pulse-alert 2s ease-in-out infinite;
+  }
+
+  /* Newspaper column layout */
+  .newspaper-columns {
+    column-count: 1;
+    column-gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .newspaper-columns {
+      column-count: 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .newspaper-columns {
+      column-count: 3;
+    }
+  }
+
+  /* Article card hover effect */
+  .article-card {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .article-card:hover {
+    @apply shadow-lg -translate-y-1;
+  }
+
+  /* Decorative divider */
+  .newspaper-divider {
+    @apply relative my-8;
+  }
+
+  .newspaper-divider::before {
+    content: '';
+    @apply absolute left-0 right-0 top-1/2 h-px bg-border;
+  }
+
+  .newspaper-divider::after {
+    content: '◆';
+    @apply absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-accent;
+  }
+
+  /* Section header styling */
+  .section-header {
+    @apply relative pb-3 mb-6 border-b-2 border-primary;
+  }
+
+  .section-header::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-16 h-1 bg-accent;
   }
 }
