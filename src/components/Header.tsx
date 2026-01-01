@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search, Cloud, Sun, CloudRain, Snowflake } from 'lucide-react';
+import { Menu, X, Search, Cloud, Sun, CloudRain, Snowflake, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navItems = [
   { label: 'Local', href: '/section/local' },
@@ -81,9 +82,17 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-accent transition-all group-hover:w-3/4" />
             </Link>
           ))}
-          <Button variant="ghost" size="icon" className="ml-4">
-            <Search className="h-4 w-4" />
-          </Button>
+          <div className="ml-4 flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/admin">
+              <Button variant="ghost" size="icon" title="Admin Dashboard">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button variant="ghost" size="icon">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation Toggle */}
