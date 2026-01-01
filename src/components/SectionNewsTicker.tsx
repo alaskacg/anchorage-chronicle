@@ -74,19 +74,13 @@ export function SectionNewsTicker({ section, className }: SectionNewsTickerProps
   return (
     <div className={cn("overflow-hidden bg-muted/50 border-b border-border", className)}>
       <div className="flex items-center">
-        {/* Section label */}
-        <div className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider">
-          {data.icon}
-          <span className="hidden sm:inline">{data.label}</span>
-        </div>
-
-        {/* Ticker content */}
+        {/* Ticker content - no label, just the scrolling news */}
         <div className="flex-1 overflow-hidden relative">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-muted/50 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-muted/50 to-transparent z-10 pointer-events-none" />
           
-          <div className="ticker-section-animate flex whitespace-nowrap py-1.5">
+          <div className="ticker-section-fast flex whitespace-nowrap py-1.5">
             {allItems.map((item, index) => (
               <span
                 key={`${item.id}-${index}`}
