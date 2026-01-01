@@ -19,6 +19,8 @@ const navItems = [
 interface HeaderProps {
   currentTemp?: number;
   weatherCondition?: string;
+  /** Use a smaller masthead for pages like the homepage */
+  compact?: boolean;
 }
 
 const WeatherIcon = ({ condition }: { condition?: string }) => {
@@ -37,7 +39,7 @@ const WeatherIcon = ({ condition }: { condition?: string }) => {
   }
 };
 
-export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }: HeaderProps) {
+export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy', compact = false }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const today = new Date();
   const dateString = today.toLocaleDateString('en-US', {
@@ -53,7 +55,10 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
           <span className="font-sans">{dateString}</span>
-          <Link to="/weather" className="flex items-center gap-2 font-sans hover:text-accent transition-colors">
+          <Link
+            to="/weather"
+            className="flex items-center gap-2 font-sans transition-colors hover:text-primary-foreground/90"
+          >
             <WeatherIcon condition={weatherCondition} />
             <span>Anchorage: {currentTemp}°F</span>
             <span className="hidden sm:inline">• {weatherCondition}</span>
@@ -62,10 +67,21 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
       </div>
 
       {/* Masthead */}
-      <div className="container mx-auto px-4 py-6 text-center border-b border-border">
-        <Link to="/" className="inline-block">
-          <AnimatedLogo size="lg" showText={true} variant="dark" />
-        </Link>
+      <div className="container mx-auto px-4">
+        <div className={"relative text-center border-b border-border " + (compact ? "py-3" : "py-6")}>
+          {/* Lower-left masthead logo (always visible) */}
+          <Link
+            to="/"
+            className="absolute left-0 bottom-2 inline-flex items-center"
+            aria-label="Home"
+          >
+            <AnimatedLogo size="sm" showText={false} variant="dark" />
+          </Link>
+
+          <Link to="/" className="inline-block">
+            <AnimatedLogo size={compact ? 'md' : 'lg'} showText={true} variant="dark" />
+          </Link>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -76,7 +92,7 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
             <Link
               key={item.href}
               to={item.href}
-              className="px-4 py-2 text-sm font-sans font-medium text-foreground hover:text-accent transition-colors relative"
+              className="px-4 py-2 text-sm font-sans font-medium text-foreground transition-colors hover:text-foreground/90"
             >
               {item.label}
             </Link>
@@ -96,16 +112,15 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
 
         {/* Mobile Navigation Toggle */}
         <div className="md:hidden flex items-center justify-between py-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+          <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <Button variant="ghost" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -116,7 +131,7 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
                 <Link
                   key={item.href}
                   to={item.href}
-                  className="px-4 py-3 text-sm font-sans font-medium text-foreground hover:bg-muted transition-colors"
+                  className="px-4 py-3 text-sm font-sans font-medium text-foreground transition-colors hover:bg-muted"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -129,3 +144,4 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
     </header>
   );
 }
+
