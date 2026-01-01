@@ -6,6 +6,7 @@ import akListingsBg from '@/assets/ad-aklistings-bg.jpg';
 import consultingBg from '@/assets/ad-consulting-bg.jpg';
 import boatsBg from '@/assets/ad-boats-bg.jpg';
 import miningBg from '@/assets/ad-mining-bg.jpg';
+import akGuidesearchBg from '@/assets/ad-akguidesearch-bg.jpg';
 
 interface AdConfig {
   id: string;
@@ -92,7 +93,7 @@ const ads: AdConfig[] = [
     description: 'Connect with experienced Alaska guides for fishing, hunting, wildlife viewing, and wilderness adventures across the Last Frontier.',
     features: ['Fishing Guides', 'Hunting Outfitters', 'Wildlife Tours'],
     url: 'https://akguidesearch.com',
-    bgImage: consultingBg,
+    bgImage: akGuidesearchBg,
     accentColor: 'from-secondary/90 to-emerald-800/90',
     icon: <MapPin className="h-8 w-8" />,
     stats: [

@@ -14,6 +14,7 @@ const navItems = [
   { label: 'Outdoors', href: '/section/outdoors' },
   { label: 'Community', href: '/section/community' },
   { label: 'Weather', href: '/weather' },
+  { label: 'About', href: '/about' },
 ];
 
 interface HeaderProps {
