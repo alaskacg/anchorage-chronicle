@@ -198,6 +198,14 @@
     animation-play-state: paused;
   }
 
+  .ticker-section-fast {
+    animation: ticker-scroll 50s linear infinite;
+  }
+
+  .ticker-section-fast:hover {
+    animation-play-state: paused;
+  }
+
   /* Ad animations */
   .ad-entrance-large {
     animation: ad-slide-up 0.8s ease-out forwards;
