@@ -47,7 +47,7 @@ export function AnimatedLogo({
           alt="The Anchorage Chronicle logo"
           className={`${sizeClasses[size]} w-auto relative z-10`}
           style={{
-            filter: variant === 'light' ? 'brightness(0) invert(1)' : 'none',
+            filter: 'none',
           }}
           loading="eager"
           decoding="async"
@@ -59,7 +59,7 @@ export function AnimatedLogo({
         <div className="min-w-0">
           <h1
             className={`font-display ${textSizes[size]} font-bold tracking-tight leading-none ${
-              variant === 'light' ? 'text-primary-foreground' : 'text-primary'
+              variant === 'light' ? 'text-foreground' : 'text-primary'
             }`}
           >
             The Anchorage Chronicle
@@ -67,7 +67,7 @@ export function AnimatedLogo({
           {!compact && (
             <p
               className={`${subTextSizes[size]} mt-1 italic ${
-                variant === 'light' ? 'text-primary-foreground/80' : 'text-muted-foreground'
+                variant === 'light' ? 'text-muted-foreground' : 'text-muted-foreground'
               }`}
             >
               <span className="font-serif">Alaska's Voice Since 2026</span>
