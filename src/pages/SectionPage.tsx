@@ -184,9 +184,6 @@ const SectionPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Featured Quote */}
-              <RandomAlaskaQuote variant="featured" />
-
               {/* Top Stories */}
               <div>
                 <SectionHeader title="Latest Stories" showViewAll={false} />
@@ -241,11 +238,6 @@ const SectionPage = () => {
                           variant="compact"
                         />
                       ))}
-                    </div>
-
-                    {/* Another Quote */}
-                    <div className="my-8">
-                      <RandomAlaskaQuote variant="default" />
                     </div>
 
                     {/* Remaining Articles */}
@@ -306,6 +298,7 @@ const SectionPage = () => {
                 </div>
               </div>
 
+              {/* One quote per page */}
               <RandomAlaskaQuote variant="sidebar" />
 
               <AdBanner variant="sidebar" adId="boats" />

@@ -542,9 +542,6 @@ const WeatherPage = () => {
                   </Card>
                 </TabsContent>
               </Tabs>
-
-              {/* Alaska Quote */}
-              <RandomAlaskaQuote variant="featured" />
             </div>
 
             {/* Sidebar */}
