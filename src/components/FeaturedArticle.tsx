@@ -37,7 +37,7 @@ export function FeaturedArticle({
           <img
             src={displayImage}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent" />
           

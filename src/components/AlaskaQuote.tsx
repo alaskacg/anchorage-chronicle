@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Quote } from 'lucide-react';
 
 interface AlaskaQuoteProps {
@@ -53,9 +54,25 @@ export function AlaskaQuote({ quote, author, variant = 'default' }: AlaskaQuoteP
   );
 }
 
-export function RandomAlaskaQuote({ variant = 'default' }: { variant?: 'default' | 'featured' | 'sidebar' }) {
-  const randomQuote = alaskaQuotes[Math.floor(Math.random() * alaskaQuotes.length)];
-  return <AlaskaQuote quote={randomQuote.quote} author={randomQuote.author} variant={variant} />;
+export function RandomAlaskaQuote({
+  variant = 'default',
+  autoRotateMs = 10000,
+}: {
+  variant?: 'default' | 'featured' | 'sidebar';
+  autoRotateMs?: number;
+}) {
+  const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * alaskaQuotes.length));
+
+  useEffect(() => {
+    if (!autoRotateMs || autoRotateMs <= 0) return;
+    const id = window.setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % alaskaQuotes.length);
+    }, autoRotateMs);
+    return () => window.clearInterval(id);
+  }, [autoRotateMs]);
+
+  const q = alaskaQuotes[quoteIndex];
+  return <AlaskaQuote quote={q.quote} author={q.author} variant={variant} />;
 }
 
 export { alaskaQuotes };

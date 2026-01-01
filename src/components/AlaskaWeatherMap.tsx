@@ -1,9 +1,8 @@
-import { useState, forwardRef } from 'react';
-import { Cloud, Snowflake, Sun, CloudRain, Wind, Thermometer, ZoomIn, ZoomOut, MapPin } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, forwardRef } from 'react';
+import { MapPin, Minus, Plus, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-// Alaska city data with weather info
 export interface CityWeather {
   name: string;
   lat: number;
@@ -22,49 +21,13 @@ export const defaultAlaskaCities: CityWeather[] = [
   { name: 'Fairbanks', lat: 64.8378, lng: -147.7164, temp: -5, condition: 'Clear' },
   { name: 'Juneau', lat: 58.3019, lng: -134.4197, temp: 35, condition: 'Rain' },
   { name: 'Barrow (Utqiaġvik)', lat: 71.2906, lng: -156.7886, temp: -25, condition: 'Snow' },
-  { name: 'Kodiak', lat: 57.7900, lng: -152.4072, temp: 38, condition: 'Cloudy' },
+  { name: 'Kodiak', lat: 57.79, lng: -152.4072, temp: 38, condition: 'Cloudy' },
   { name: 'Bethel', lat: 60.7922, lng: -161.7558, temp: 15, condition: 'Snow' },
   { name: 'Nome', lat: 64.5011, lng: -165.4064, temp: 5, condition: 'Partly Cloudy' },
   { name: 'Ketchikan', lat: 55.3422, lng: -131.6461, temp: 40, condition: 'Rain' },
-  { name: 'Sitka', lat: 57.0531, lng: -135.3300, temp: 38, condition: 'Cloudy' },
+  { name: 'Sitka', lat: 57.0531, lng: -135.33, temp: 38, condition: 'Cloudy' },
   { name: 'Valdez', lat: 61.1309, lng: -146.3483, temp: 32, condition: 'Snow' },
 ];
-
-const getWeatherIcon = (condition: string, size = 'h-4 w-4') => {
-  switch (condition?.toLowerCase()) {
-    case 'clear':
-    case 'sunny':
-      return <Sun className={`${size} text-amber-400`} />;
-    case 'rain':
-    case 'rainy':
-      return <CloudRain className={`${size} text-blue-400`} />;
-    case 'snow':
-    case 'snowy':
-      return <Snowflake className={`${size} text-cyan-300`} />;
-    case 'cloudy':
-      return <Cloud className={`${size} text-slate-400`} />;
-    default:
-      return <Cloud className={`${size} text-slate-400`} />;
-  }
-};
-
-const getConditionEmoji = (condition: string) => {
-  switch (condition?.toLowerCase()) {
-    case 'clear':
-    case 'sunny':
-      return '☀️';
-    case 'rain':
-    case 'rainy':
-      return '🌧️';
-    case 'snow':
-    case 'snowy':
-      return '❄️';
-    case 'partly cloudy':
-      return '⛅';
-    default:
-      return '☁️';
-  }
-};
 
 interface AlaskaWeatherMapProps {
   className?: string;
@@ -73,271 +36,336 @@ interface AlaskaWeatherMapProps {
   cities?: CityWeather[];
 }
 
-type MapLayerType = 'dark' | 'satellite' | 'terrain' | 'standard';
+type ZoomMode = 'state' | 'regional' | 'local';
 
-export const AlaskaWeatherMap = forwardRef<HTMLDivElement, AlaskaWeatherMapProps>(({ 
-  className, 
-  selectedLocation,
-  onLocationSelect,
-  cities = defaultAlaskaCities
-}, ref) => {
-  const [mapLayer, setMapLayer] = useState<MapLayerType>('dark');
-  const [zoom, setZoom] = useState<'state' | 'regional' | 'local'>('state');
-  const [hoveredCity, setHoveredCity] = useState<string | null>(null);
+type TempBand = 'arctic' | 'freezing' | 'mild' | 'warm';
 
-  // Map tile URLs
-  const mapUrls: Record<MapLayerType, string> = {
-    dark: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
-    satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/4/4/1',
-    terrain: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/4/4/1',
-    standard: 'https://tile.openstreetmap.org/4/4/1.png'
-  };
+const tempBand = (temp: number): TempBand => {
+  if (temp < 0) return 'arctic';
+  if (temp < 32) return 'freezing';
+  if (temp < 50) return 'mild';
+  return 'warm';
+};
 
-  // Get zoom-specific styling
-  const getZoomStyles = () => {
-    switch (zoom) {
-      case 'local':
-        return { transform: 'scale(2.5)', transformOrigin: 'center' };
-      case 'regional':
-        return { transform: 'scale(1.5)', transformOrigin: 'center' };
-      default:
-        return { transform: 'scale(1)' };
-    }
-  };
+const bandColor = (band: TempBand) => {
+  // Use semantic tokens only.
+  switch (band) {
+    case 'arctic':
+      return 'hsl(var(--secondary))';
+    case 'freezing':
+      return 'hsl(var(--muted-foreground))';
+    case 'mild':
+      return 'hsl(var(--accent))';
+    case 'warm':
+      return 'hsl(var(--primary))';
+  }
+};
 
-  // Calculate city position on SVG map
-  const getCityPosition = (lat: number, lng: number) => {
-    // Convert lat/lng to approximate x,y positions for Alaska
-    // Alaska roughly spans lat 54-72, lng -172 to -130
-    const x = ((lng + 172) / 42) * 100; // percentage across
-    const y = ((72 - lat) / 18) * 100; // percentage down
-    return { x: Math.max(5, Math.min(95, x)), y: Math.max(5, Math.min(95, y)) };
-  };
+const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
-  return (
-    <div ref={ref} className={cn("relative rounded-lg overflow-hidden bg-slate-900", className)}>
-      {/* Map Controls - Top Left */}
-      <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-2">
-        <div className="bg-card/95 backdrop-blur-sm p-1.5 rounded-lg shadow-lg border border-border flex gap-1">
-          {(['dark', 'satellite', 'terrain', 'standard'] as MapLayerType[]).map((layer) => (
+export const AlaskaWeatherMap = forwardRef<HTMLDivElement, AlaskaWeatherMapProps>(
+  ({ className, selectedLocation, onLocationSelect, cities = defaultAlaskaCities }, ref) => {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [zoomMode, setZoomMode] = useState<ZoomMode>('state');
+
+    // pan in pixels (relative to container)
+    const [pan, setPan] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
+
+    const scale = useMemo(() => {
+      switch (zoomMode) {
+        case 'local':
+          return 3;
+        case 'regional':
+          return 1.8;
+        default:
+          return 1;
+      }
+    }, [zoomMode]);
+
+    const resetView = () => {
+      setZoomMode('state');
+      setPan({ x: 0, y: 0 });
+    };
+
+    const fitPanToBounds = (nextPan: { x: number; y: number }) => {
+      const el = containerRef.current;
+      if (!el) return nextPan;
+
+      // when scaled, allow panning but constrain to keep map in view
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+
+      // max pan is half of the extra scaled size
+      const maxX = ((w * scale) - w) / 2;
+      const maxY = ((h * scale) - h) / 2;
+
+      return {
+        x: clamp(nextPan.x, -maxX, maxX),
+        y: clamp(nextPan.y, -maxY, maxY),
+      };
+    };
+
+    const setPanSafe = (next: { x: number; y: number }) => setPan(fitPanToBounds(next));
+
+    // keep pan clamped when zoom changes
+    useEffect(() => {
+      setPanSafe(pan);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [scale]);
+
+    const zoomIn = () => {
+      setZoomMode((z) => (z === 'state' ? 'regional' : z === 'regional' ? 'local' : 'local'));
+    };
+
+    const zoomOut = () => {
+      setZoomMode((z) => (z === 'local' ? 'regional' : z === 'regional' ? 'state' : 'state'));
+      if (zoomMode === 'regional') setPan({ x: 0, y: 0 });
+    };
+
+    const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
+      if (scale <= 1) return;
+      (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+      setIsDragging(true);
+      dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
+    };
+
+    const onPointerMove: React.PointerEventHandler<HTMLDivElement> = (e) => {
+      if (!isDragging || !dragStart.current) return;
+      const dx = e.clientX - dragStart.current.x;
+      const dy = e.clientY - dragStart.current.y;
+      setPanSafe({ x: dragStart.current.panX + dx, y: dragStart.current.panY + dy });
+    };
+
+    const onPointerUp: React.PointerEventHandler<HTMLDivElement> = (e) => {
+      if (!isDragging) return;
+      try {
+        (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+      setIsDragging(false);
+      dragStart.current = null;
+    };
+
+    const getCityPosition = (lat: number, lng: number) => {
+      // Alaska approx spans lat 54-72, lng -172 to -130
+      const x = ((lng + 172) / 42) * 100;
+      const y = ((72 - lat) / 18) * 100;
+      return { x: clamp(x, 5, 95), y: clamp(y, 5, 95) };
+    };
+
+    const transform = `translate(${pan.x}px, ${pan.y}px) scale(${scale})`;
+
+    return (
+      <div ref={ref} className={cn('relative rounded-lg overflow-hidden bg-card border border-border', className)}>
+        {/* Controls */}
+        <div className="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2">
+          <div className="bg-card/95 backdrop-blur-sm p-1.5 rounded-lg shadow-lg border border-border flex gap-1">
             <Button
-              key={layer}
-              variant={mapLayer === layer ? 'default' : 'ghost'}
+              variant={zoomMode === 'state' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => setMapLayer(layer)}
-              className="text-xs capitalize h-7 px-2"
+              onClick={() => {
+                setZoomMode('state');
+                setPan({ x: 0, y: 0 });
+              }}
+              className="text-xs h-7 px-3"
             >
-              {layer}
+              State
             </Button>
-          ))}
+            <Button
+              variant={zoomMode === 'regional' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setZoomMode('regional')}
+              className="text-xs h-7 px-3"
+            >
+              Regional
+            </Button>
+            <Button
+              variant={zoomMode === 'local' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setZoomMode('local')}
+              className="text-xs h-7 px-3"
+            >
+              Local
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Zoom Controls - Top Right */}
-      <div className="absolute top-3 right-3 z-20 flex flex-col gap-1">
-        <div className="bg-card/95 backdrop-blur-sm rounded-lg shadow-lg border border-border">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setZoom(zoom === 'local' ? 'regional' : zoom === 'regional' ? 'state' : 'local')}
-            className="h-8 w-8 p-0"
-          >
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setZoom(zoom === 'local' ? 'regional' : zoom === 'regional' ? 'state' : 'state')}
-            className="h-8 w-8 p-0"
-          >
-            <ZoomOut className="h-4 w-4" />
-          </Button>
+        <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
+          <div className="bg-card/95 backdrop-blur-sm rounded-lg shadow-lg border border-border overflow-hidden">
+            <Button variant="ghost" size="sm" onClick={zoomIn} className="h-9 w-9 p-0" title="Zoom in">
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={zoomOut} className="h-9 w-9 p-0" title="Zoom out">
+              <Minus className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="bg-card/95 backdrop-blur-sm rounded-lg shadow-lg border border-border overflow-hidden">
+            <Button variant="ghost" size="sm" onClick={resetView} className="h-9 w-9 p-0" title="Reset view">
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Interactive SVG Map of Alaska */}
-      <div 
-        className="relative h-[500px] w-full transition-transform duration-500"
-        style={getZoomStyles()}
-      >
-        {/* Background Map Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-60"
-          style={{
-            backgroundImage: `url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Alaska_in_United_States_%28US50%29.svg/800px-Alaska_in_United_States_%28US50%29.svg.png')`,
-            filter: mapLayer === 'dark' ? 'invert(1) hue-rotate(180deg)' : 
-                   mapLayer === 'satellite' ? 'saturate(1.2)' : 'none'
-          }}
-        />
+        {/* Map canvas */}
+        <div
+          ref={containerRef}
+          className={cn(
+            'relative h-[520px] w-full select-none touch-none',
+            scale > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'
+          )}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          <div
+            className={cn('absolute inset-0 origin-center transition-transform duration-200', isDragging && 'transition-none')}
+            style={{ transform }}
+          >
+            {/* Background map (detailed) */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Alaska_topographic_map.png/1024px-Alaska_topographic_map.png')",
+                filter: 'contrast(1.05) saturate(0.95)',
+                opacity: 0.85,
+              }}
+            />
 
-        {/* Alaska Shape Overlay */}
-        <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
-          {/* Alaska outline - simplified path */}
-          <path
-            d="M15,30 L25,20 L45,15 L65,20 L80,30 L85,45 L90,55 L85,70 L70,80 L50,85 L30,80 L20,70 L15,55 Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.5"
-            className="text-accent/30"
-          />
-
-          {/* City Markers */}
-          {cities.map((city) => {
-            const pos = getCityPosition(city.lat, city.lng);
-            const isSelected = selectedLocation === city.name;
-            const isHovered = hoveredCity === city.name;
-            const tempColor = city.temp < 0 ? '#60a5fa' : city.temp < 32 ? '#94a3b8' : city.temp < 50 ? '#22c55e' : '#f59e0b';
-            
-            return (
-              <g
-                key={city.name}
-                transform={`translate(${pos.x}, ${pos.y})`}
-                onClick={() => onLocationSelect?.(city.name)}
-                onMouseEnter={() => setHoveredCity(city.name)}
-                onMouseLeave={() => setHoveredCity(null)}
-                className="cursor-pointer"
-              >
-                {/* Pulse animation for selected */}
-                {isSelected && (
-                  <circle
-                    r="4"
-                    fill="none"
-                    stroke={tempColor}
-                    strokeWidth="0.3"
-                    className="animate-ping"
-                  />
-                )}
-                
-                {/* Marker background */}
-                <circle
-                  r={isSelected || isHovered ? "3" : "2"}
-                  fill={tempColor}
-                  stroke="white"
-                  strokeWidth="0.3"
-                  className="transition-all duration-200"
-                />
-                
-                {/* Temperature label */}
-                <text
-                  y="-4"
-                  textAnchor="middle"
-                  className="text-[2.5px] font-bold fill-current"
-                  style={{ fill: tempColor }}
-                >
-                  {city.temp}°
+            {/* Labels + markers layer */}
+            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
+              {/* Regional labels */}
+              <g opacity="0.9">
+                <text x="50" y="18" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--foreground))' }}>
+                  <tspan className="text-[4px] font-semibold">ALASKA</tspan>
                 </text>
-
-                {/* City name (show on hover or selection) */}
-                {(isHovered || isSelected) && (
-                  <g>
-                    <rect
-                      x="-8"
-                      y="2"
-                      width="16"
-                      height="4"
-                      rx="0.5"
-                      fill="hsl(var(--card))"
-                      stroke="hsl(var(--border))"
-                      strokeWidth="0.1"
-                    />
-                    <text
-                      y="4.8"
-                      textAnchor="middle"
-                      className="text-[2px] fill-current"
-                      style={{ fill: 'hsl(var(--foreground))' }}
-                    >
-                      {city.name}
-                    </text>
-                  </g>
-                )}
+                <text x="18" y="50" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--muted-foreground))' }}>
+                  <tspan className="text-[2.6px]">Bering Sea</tspan>
+                </text>
+                <text x="78" y="72" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--muted-foreground))' }}>
+                  <tspan className="text-[2.6px]">Gulf of Alaska</tspan>
+                </text>
+                <text x="62" y="36" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--muted-foreground))' }}>
+                  <tspan className="text-[2.4px]">Interior</tspan>
+                </text>
+                <text x="70" y="52" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--muted-foreground))' }}>
+                  <tspan className="text-[2.4px]">Southcentral</tspan>
+                </text>
+                <text x="84" y="58" textAnchor="middle" className="fill-current" style={{ fill: 'hsl(var(--muted-foreground))' }}>
+                  <tspan className="text-[2.4px]">Southeast</tspan>
+                </text>
               </g>
-            );
-          })}
-        </svg>
-      </div>
 
-      {/* Bottom Controls */}
-      <div className="absolute bottom-3 left-3 z-20">
-        <div className="bg-card/95 backdrop-blur-sm p-1.5 rounded-lg shadow-lg border border-border flex gap-1">
-          <Button
-            variant={zoom === 'state' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setZoom('state')}
-            className="text-xs h-7 px-3"
-          >
-            State
-          </Button>
-          <Button
-            variant={zoom === 'regional' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setZoom('regional')}
-            className="text-xs h-7 px-3"
-          >
-            Regional
-          </Button>
-          <Button
-            variant={zoom === 'local' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setZoom('local')}
-            className="text-xs h-7 px-3"
-          >
-            Local
-          </Button>
+              {/* City markers */}
+              {cities.map((city) => {
+                const pos = getCityPosition(city.lat, city.lng);
+                const isSelected = selectedLocation === city.name;
+                const color = bandColor(tempBand(city.temp));
+
+                return (
+                  <g
+                    key={city.name}
+                    transform={`translate(${pos.x}, ${pos.y})`}
+                    onClick={() => onLocationSelect?.(city.name)}
+                    className="cursor-pointer"
+                  >
+                    {isSelected && (
+                      <circle r="4" fill="none" stroke={color} strokeWidth="0.4" className="animate-ping" />
+                    )}
+                    <circle r={isSelected ? 3 : 2.2} fill={color} stroke="hsl(var(--background))" strokeWidth="0.35" />
+                    <text y="-4" textAnchor="middle" className="text-[2.6px] font-bold" style={{ fill: color }}>
+                      {city.temp}°
+                    </text>
+                    {(scale > 1.2 || isSelected) && (
+                      <g>
+                        <rect
+                          x="-9"
+                          y="2"
+                          width="18"
+                          height="4.6"
+                          rx="0.8"
+                          fill="hsl(var(--card))"
+                          stroke="hsl(var(--border))"
+                          strokeWidth="0.2"
+                          opacity="0.95"
+                        />
+                        <text y="5.4" textAnchor="middle" className="text-[2.2px]" style={{ fill: 'hsl(var(--foreground))' }}>
+                          {city.name}
+                        </text>
+                      </g>
+                    )}
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
         </div>
-      </div>
 
-      {/* Legend */}
-      <div className="absolute bottom-3 right-3 z-20 bg-card/95 backdrop-blur-sm p-2 rounded-lg shadow-lg border border-border">
-        <div className="text-[10px] font-semibold text-muted-foreground mb-1">Temperature</div>
-        <div className="flex gap-1 items-center text-[10px]">
-          <div className="w-3 h-3 rounded bg-blue-400" /> &lt;0°
-          <div className="w-3 h-3 rounded bg-slate-400 ml-1" /> 0-32°
-          <div className="w-3 h-3 rounded bg-green-500 ml-1" /> 32-50°
-          <div className="w-3 h-3 rounded bg-amber-500 ml-1" /> &gt;50°
+        {/* Legend + help */}
+        <div className="absolute bottom-3 left-3 z-20 bg-card/95 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border max-w-[260px]">
+          <div className="text-xs font-semibold text-muted-foreground">Map</div>
+          <div className="text-xs text-muted-foreground mt-1">
+            {scale > 1 ? 'Drag to pan • Use +/− to zoom' : 'Use Regional/Local to zoom'}
+          </div>
         </div>
-      </div>
 
-      {/* Selected City Detail Card */}
-      {selectedLocation && (
-        <div className="absolute top-16 left-3 z-20 bg-card/95 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border min-w-[180px]">
-          {(() => {
-            const city = cities.find(c => c.name === selectedLocation);
-            if (!city) return null;
-            return (
-              <>
-                <div className="flex items-center gap-2 mb-2">
-                  <MapPin className="h-4 w-4 text-accent" />
-                  <span className="font-semibold text-sm">{city.name}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  {getWeatherIcon(city.condition, 'h-8 w-8')}
-                  <div>
-                    <div className="text-2xl font-bold">{city.temp}°F</div>
-                    <div className="text-xs text-muted-foreground">{city.condition}</div>
-                  </div>
-                </div>
-                {city.high !== undefined && city.low !== undefined && (
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    H: {city.high}° / L: {city.low}°
-                  </div>
-                )}
-                {city.humidity !== undefined && (
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    Humidity: {city.humidity}%
-                  </div>
-                )}
-              </>
-            );
-          })()}
+        <div className="absolute bottom-3 right-3 z-20 bg-card/95 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border">
+          <div className="text-xs font-semibold text-muted-foreground mb-2">Temperature</div>
+          <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-3 w-3 rounded" style={{ background: bandColor('arctic') }} />
+              <span>&lt; 0°F</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-3 w-3 rounded" style={{ background: bandColor('freezing') }} />
+              <span>0–32°F</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-3 w-3 rounded" style={{ background: bandColor('mild') }} />
+              <span>32–50°F</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-3 w-3 rounded" style={{ background: bandColor('warm') }} />
+              <span>&gt; 50°F</span>
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Data source attribution */}
-      <div className="absolute bottom-12 right-3 z-20 text-[9px] text-muted-foreground bg-card/80 px-2 py-1 rounded">
-        Data: National Weather Service Alaska
+        {selectedLocation && (
+          <div className="absolute top-16 left-3 z-20 bg-card/95 backdrop-blur-sm p-3 rounded-lg shadow-lg border border-border min-w-[200px]">
+            {(() => {
+              const city = cities.find((c) => c.name === selectedLocation);
+              if (!city) return null;
+              const color = bandColor(tempBand(city.temp));
+              return (
+                <>
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="h-4 w-4" style={{ color }} />
+                    <span className="font-semibold text-sm">{city.name}</span>
+                  </div>
+                  <div className="flex items-end justify-between gap-3">
+                    <div>
+                      <div className="text-2xl font-bold">{city.temp}°F</div>
+                      <div className="text-xs text-muted-foreground">{city.condition}</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground text-right">
+                      <div className="font-medium">Zoom: {zoomMode}</div>
+                      <div>{Math.round(scale * 100)}%</div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        )}
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 AlaskaWeatherMap.displayName = 'AlaskaWeatherMap';
+

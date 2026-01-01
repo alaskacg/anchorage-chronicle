@@ -74,9 +74,9 @@ export function AnimatedLogo({ size = 'md', showText = true, variant = 'dark' }:
         <img
           src={logoIcon}
           alt="The Anchorage Chronicle"
-          className={`${sizeClasses[size]} w-auto relative z-10 transition-all duration-500 ${
+          className={`${sizeClasses[size]} w-auto relative z-10 transition-transform duration-200 ${
             mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-          } ${isHovered ? 'scale-110 rotate-3' : 'scale-100 rotate-0'}`}
+          } ${isHovered ? 'scale-[1.03]' : 'scale-100'}`}
           style={{
             filter: variant === 'light' ? 'brightness(0) invert(1)' : 'none',
           }}
@@ -110,9 +110,9 @@ export function AnimatedLogo({ size = 'md', showText = true, variant = 'dark' }:
           style={{ transitionDelay: '100ms' }}
         >
           <h1
-            className={`font-display ${textSizes[size]} font-bold tracking-tight transition-all duration-300 ${
+            className={`font-display ${textSizes[size]} font-bold tracking-tight ${
               variant === 'light' ? 'text-primary-foreground' : 'text-primary'
-            } ${isHovered ? 'tracking-wide' : 'tracking-tight'}`}
+            }`}
           >
             <span className="relative">
               The

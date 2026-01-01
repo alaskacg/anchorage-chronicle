@@ -76,10 +76,9 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
             <Link
               key={item.href}
               to={item.href}
-              className="px-4 py-2 text-sm font-sans font-medium text-foreground hover:text-accent transition-colors relative group"
+              className="px-4 py-2 text-sm font-sans font-medium text-foreground hover:text-accent transition-colors relative"
             >
               {item.label}
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-accent transition-all group-hover:w-3/4" />
             </Link>
           ))}
           <div className="ml-4 flex items-center gap-2">
