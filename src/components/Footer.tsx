@@ -34,7 +34,7 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-4">
-              <AnimatedLogo size="sm" showText={true} variant="light" />
+              <AnimatedLogo size="sm" showText={true} variant="dark" />
             </Link>
             <p className="font-serif text-sm text-primary-foreground/80 mb-4">
               Serving Alaska with trusted journalism since 2026. Your source for local, state, and community news.

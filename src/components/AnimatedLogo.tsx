@@ -3,6 +3,11 @@ import logoIcon from '@/assets/logo-icon.png';
 interface AnimatedLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
+  /**
+   * Color context for the lockup.
+   * - light: placed on light backgrounds (use dark/primary text)
+   * - dark: placed on dark backgrounds (use primary-foreground text)
+   */
   variant?: 'light' | 'dark';
   /** When true, use a tighter lockup for compact headers (homepage). */
   compact?: boolean;
@@ -11,7 +16,7 @@ interface AnimatedLogoProps {
 export function AnimatedLogo({
   size = 'md',
   showText = true,
-  variant = 'dark',
+  variant = 'light',
   compact = false,
 }: AnimatedLogoProps) {
   const sizeClasses = {
@@ -38,6 +43,10 @@ export function AnimatedLogo({
 
   const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-3 md:gap-4';
 
+  const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-primary';
+  const subtitleColorClass =
+    variant === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground';
+
   return (
     <div className={`flex items-center ${gapClass}`}>
       {/* Logo Icon */}
@@ -57,19 +66,11 @@ export function AnimatedLogo({
       {/* Text */}
       {showText && (
         <div className="min-w-0">
-          <h1
-            className={`font-display ${textSizes[size]} font-bold tracking-tight leading-none ${
-              variant === 'light' ? 'text-foreground' : 'text-primary'
-            }`}
-          >
+          <h1 className={`font-display ${textSizes[size]} font-bold tracking-tight leading-none ${titleColorClass}`}>
             The Anchorage Chronicle
           </h1>
           {!compact && (
-            <p
-              className={`${subTextSizes[size]} mt-1 italic ${
-                variant === 'light' ? 'text-muted-foreground' : 'text-muted-foreground'
-              }`}
-            >
+            <p className={`${subTextSizes[size]} mt-1 italic ${subtitleColorClass}`}>
               <span className="font-serif">Alaska's Voice Since 2026</span>
               <span className="mx-2">•</span>
               <span className="font-serif">Serving the Last Frontier</span>
