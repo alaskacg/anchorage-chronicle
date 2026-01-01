@@ -54,14 +54,14 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy', c
     <header className="bg-card border-b border-border">
       {/* Top bar with date and weather */}
       <div className="bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
-          <span className="font-sans">{dateString}</span>
+        <div className="container mx-auto px-3 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between text-xs sm:text-sm">
+          <span className="font-sans truncate">{dateString}</span>
           <Link
             to="/weather"
-            className="flex items-center gap-2 font-sans transition-colors hover:text-primary-foreground/90"
+            className="flex items-center gap-1 sm:gap-2 font-sans transition-colors hover:text-primary-foreground/90 shrink-0"
           >
             <WeatherIcon condition={weatherCondition} />
-            <span>Anchorage: {currentTemp}°F</span>
+            <span>{currentTemp}°F</span>
             <span className="hidden sm:inline">• {weatherCondition}</span>
           </Link>
         </div>

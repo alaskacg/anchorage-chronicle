@@ -138,62 +138,62 @@ export function WeatherInlay() {
         </div>
 
         {/* Main Weather Display */}
-        <div className="grid grid-cols-3 gap-4 p-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 p-4 sm:p-5">
           {/* Current Temp */}
-          <div className="col-span-2 flex items-center gap-4">
+          <div className="col-span-2 sm:col-span-2 flex items-center gap-3 sm:gap-4">
             <div className="relative">
-              <WeatherIcon condition={weather.condition} className="h-16 w-16" />
-              <div className="absolute -bottom-1 -right-1 bg-card rounded-full p-1">
-                <Thermometer className="h-3 w-3 text-destructive" />
+              <WeatherIcon condition={weather.condition} className="h-12 w-12 sm:h-16 sm:w-16" />
+              <div className="absolute -bottom-1 -right-1 bg-card rounded-full p-0.5 sm:p-1">
+                <Thermometer className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-destructive" />
               </div>
             </div>
             <div>
-              <div className="text-5xl font-display font-bold text-primary-foreground leading-none">
+              <div className="text-4xl sm:text-5xl font-display font-bold text-primary-foreground leading-none">
                 {weather.temperature_f}°
               </div>
-              <div className="text-sm text-primary-foreground/70 font-serif mt-1">
+              <div className="text-xs sm:text-sm text-primary-foreground/70 font-serif mt-1">
                 {weather.condition}
               </div>
-              <div className="text-xs text-primary-foreground/50 font-sans mt-0.5">
+              <div className="text-[10px] sm:text-xs text-primary-foreground/50 font-sans mt-0.5">
                 Feels like {feelsLike}°F
               </div>
             </div>
           </div>
 
           {/* High/Low */}
-          <div className="flex flex-col justify-center gap-2">
+          <div className="col-span-2 sm:col-span-1 flex sm:flex-col justify-center gap-3 sm:gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-primary-foreground/10">
             <div className="flex items-center gap-2 text-primary-foreground/80">
-              <Sun className="h-4 w-4 text-accent" />
-              <span className="font-sans text-sm font-medium">H: {weather.high_f}°</span>
+              <Sun className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
+              <span className="font-sans text-xs sm:text-sm font-medium">H: {weather.high_f}°</span>
             </div>
             <div className="flex items-center gap-2 text-primary-foreground/80">
-              <Snowflake className="h-4 w-4 text-secondary" />
-              <span className="font-sans text-sm font-medium">L: {weather.low_f}°</span>
+              <Snowflake className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
+              <span className="font-sans text-xs sm:text-sm font-medium">L: {weather.low_f}°</span>
             </div>
           </div>
         </div>
 
         {/* Detailed Stats Grid */}
-        <div className="grid grid-cols-4 gap-px bg-primary-foreground/10">
-          <div className="bg-primary/50 p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
-            <Wind className="h-5 w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
-            <span className="text-sm font-sans font-medium text-primary-foreground">{weather.wind_mph} mph</span>
-            <span className="text-xs text-primary-foreground/50">{weather.wind_direction}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-primary-foreground/10">
+          <div className="bg-primary/50 p-2 sm:p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
+            <Wind className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
+            <span className="text-xs sm:text-sm font-sans font-medium text-primary-foreground">{weather.wind_mph} mph</span>
+            <span className="text-[10px] sm:text-xs text-primary-foreground/50">{weather.wind_direction}</span>
           </div>
-          <div className="bg-primary/50 p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
-            <Droplets className="h-5 w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-secondary transition-colors" />
-            <span className="text-sm font-sans font-medium text-primary-foreground">{weather.humidity}%</span>
-            <span className="text-xs text-primary-foreground/50">Humidity</span>
+          <div className="bg-primary/50 p-2 sm:p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
+            <Droplets className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-secondary transition-colors" />
+            <span className="text-xs sm:text-sm font-sans font-medium text-primary-foreground">{weather.humidity}%</span>
+            <span className="text-[10px] sm:text-xs text-primary-foreground/50">Humidity</span>
           </div>
-          <div className="bg-primary/50 p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
-            <Sunrise className="h-5 w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
-            <span className="text-sm font-sans font-medium text-primary-foreground">{sunTimes.sunrise}</span>
-            <span className="text-xs text-primary-foreground/50">Sunrise</span>
+          <div className="bg-primary/50 p-2 sm:p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
+            <Sunrise className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
+            <span className="text-xs sm:text-sm font-sans font-medium text-primary-foreground">{sunTimes.sunrise}</span>
+            <span className="text-[10px] sm:text-xs text-primary-foreground/50">Sunrise</span>
           </div>
-          <div className="bg-primary/50 p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
-            <Sunset className="h-5 w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
-            <span className="text-sm font-sans font-medium text-primary-foreground">{sunTimes.sunset}</span>
-            <span className="text-xs text-primary-foreground/50">Sunset</span>
+          <div className="bg-primary/50 p-2 sm:p-3 flex flex-col items-center justify-center group/stat hover:bg-primary/70 transition-colors">
+            <Sunset className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground/60 mb-1 group-hover/stat:text-accent transition-colors" />
+            <span className="text-xs sm:text-sm font-sans font-medium text-primary-foreground">{sunTimes.sunset}</span>
+            <span className="text-[10px] sm:text-xs text-primary-foreground/50">Sunset</span>
           </div>
         </div>
 

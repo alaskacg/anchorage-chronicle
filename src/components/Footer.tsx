@@ -29,38 +29,38 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
   return (
     <footer ref={ref} className="bg-primary text-primary-foreground" {...props}>
       {/* Main Footer */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="col-span-2 md:col-span-2 lg:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <AnimatedLogo size="sm" showText={true} variant="dark" />
             </Link>
-            <p className="font-serif text-sm text-primary-foreground/80 mb-4">
+            <p className="font-serif text-xs sm:text-sm text-primary-foreground/80 mb-4">
               Serving Alaska with trusted journalism since 2026. Your source for local, state, and community news.
             </p>
-            <div className="flex items-center gap-3">
-              <a href="#" className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Facebook className="h-4 w-4" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
+                <Facebook className="h-3 w-3 sm:h-4 sm:w-4" />
               </a>
-              <a href="#" className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Twitter className="h-4 w-4" />
+              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
+                <Twitter className="h-3 w-3 sm:h-4 sm:w-4" />
               </a>
-              <a href="#" className="p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Instagram className="h-4 w-4" />
+              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
+                <Instagram className="h-3 w-3 sm:h-4 sm:w-4" />
               </a>
             </div>
           </div>
 
           {/* Sections */}
           <div>
-            <h4 className="font-display text-lg font-bold mb-4">Sections</h4>
-            <ul className="space-y-2">
+            <h4 className="font-display text-base sm:text-lg font-bold mb-3 sm:mb-4">Sections</h4>
+            <ul className="space-y-1.5 sm:space-y-2">
               {sections.map((item) => (
                 <li key={item.href}>
                   <Link
                     to={item.href}
-                    className="font-sans text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
+                    className="font-sans text-xs sm:text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
                   >
                     {item.label}
                   </Link>

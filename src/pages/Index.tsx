@@ -10,6 +10,7 @@ import { NewsSectionFrame } from '@/components/NewsSectionFrame';
 import { AnimatedNewsColumn, StaggeredColumnGrid } from '@/components/AnimatedNewsColumn';
 import { QuickHeadlines } from '@/components/QuickHeadlines';
 import { InlineBreakingNews } from '@/components/InlineBreakingNews';
+import { BusinessEconomyTicker } from '@/components/BusinessEconomyTicker';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { Newspaper, MapPin, Building2, Mountain, TrendingUp } from 'lucide-react';
@@ -241,28 +242,31 @@ const Index = () => {
                   variant="default"
                   href="/section/business"
                 >
-                  <div className="p-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Business Ticker */}
+                  <BusinessEconomyTicker />
+                  
+                  <div className="p-4 sm:p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                       <div>
-                        <h4 className="font-display text-base font-bold text-foreground mb-2">
+                        <h4 className="font-display text-sm sm:text-base font-bold text-foreground mb-2">
                           Alaska Economic Outlook
                         </h4>
-                        <p className="text-muted-foreground font-serif text-sm mb-3">
+                        <p className="text-muted-foreground font-serif text-xs sm:text-sm mb-3">
                           In-depth coverage of Alaska's economy, from oil & gas to tourism, fisheries to emerging industries.
                         </p>
-                        <ul className="text-xs text-muted-foreground font-sans space-y-1">
+                        <ul className="text-[10px] sm:text-xs text-muted-foreground font-sans space-y-1">
                           <li>• Permanent Fund Updates</li>
                           <li>• Job Market Analysis</li>
                           <li>• Small Business Spotlights</li>
                         </ul>
                       </div>
-                      <div className="border-l border-border pl-6">
-                        <h4 className="font-display text-sm font-bold text-foreground mb-2">Key Industries</h4>
-                        <div className="space-y-2">
+                      <div className="border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6">
+                        <h4 className="font-display text-xs sm:text-sm font-bold text-foreground mb-2">Key Industries</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-1 gap-1 sm:gap-2">
                           {['Oil & Gas', 'Commercial Fishing', 'Tourism', 'Mining', 'Healthcare'].map((industry) => (
                             <div 
                               key={industry}
-                              className="text-xs font-sans text-muted-foreground py-1.5 px-2 bg-muted/50 hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
+                              className="text-[10px] sm:text-xs font-sans text-muted-foreground py-1 sm:py-1.5 px-2 bg-muted/50 hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
                             >
                               {industry}
                             </div>
