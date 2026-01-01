@@ -39,7 +39,7 @@ export function ArticleCard({
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-full h-64 md:h-96 object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-64 md:h-96 object-cover transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -73,7 +73,7 @@ export function ArticleCard({
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-48 object-cover transition-transform duration-300"
               />
             </div>
           )}
@@ -124,7 +124,7 @@ export function ArticleCard({
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-20 h-20 object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-20 h-20 object-cover transition-transform duration-200"
               />
             </div>
           )}

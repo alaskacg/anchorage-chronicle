@@ -13,7 +13,7 @@ export function SectionHero({ title, description, imageUrl, breadcrumbs }: Secti
     <section className="relative h-[40vh] md:h-[50vh] min-h-[300px] overflow-hidden">
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center transform transition-transform duration-[10s] hover:scale-105"
+        className="absolute inset-0 bg-cover bg-center transform transition-transform duration-700"
         style={{ backgroundImage: `url(${imageUrl})` }}
       />
 
