@@ -67,8 +67,8 @@ export function WeatherAlertTicker() {
   };
 
   const severityColors = {
-    info: 'text-secondary bg-secondary/10',
-    warning: 'text-accent bg-accent/10',
+    info: 'text-destructive bg-destructive/10',
+    warning: 'text-destructive bg-destructive/10',
     critical: 'text-destructive bg-destructive/10',
   };
 
