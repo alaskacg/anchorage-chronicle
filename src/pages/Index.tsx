@@ -11,6 +11,7 @@ import { AnimatedNewsColumn, StaggeredColumnGrid } from '@/components/AnimatedNe
 import { QuickHeadlines } from '@/components/QuickHeadlines';
 import { InlineBreakingNews } from '@/components/InlineBreakingNews';
 import { BusinessEconomyTicker } from '@/components/BusinessEconomyTicker';
+import { SectionNewsTicker } from '@/components/SectionNewsTicker';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { Newspaper, MapPin, Building2, Mountain, TrendingUp } from 'lucide-react';
@@ -159,6 +160,7 @@ const Index = () => {
               variant="default"
               href="/section/local"
             >
+              <SectionNewsTicker section="local" />
               <div className="p-4">
                 {loading ? (
                   <div className="space-y-3 animate-pulse">
@@ -177,7 +179,7 @@ const Index = () => {
                   />
                 ) : (
                   <p className="text-muted-foreground font-serif text-sm italic">
-                    Local coverage coming soon. Alaska News Corporation is building its network of community correspondents.
+                    Local coverage coming soon.
                   </p>
                 )}
               </div>
@@ -190,9 +192,10 @@ const Index = () => {
               variant="secondary"
               href="/section/state"
             >
+              <SectionNewsTicker section="state" />
               <div className="p-4">
                 <p className="text-muted-foreground font-serif text-sm italic">
-                  Coverage of Alaska state government, legislature, and statewide issues coming soon.
+                  Coverage of Alaska state government and statewide issues.
                 </p>
                 <div className="mt-4 pt-4 border-t border-border">
                   <h4 className="font-display text-sm font-bold text-foreground mb-2">Coming Coverage</h4>
@@ -212,9 +215,10 @@ const Index = () => {
               variant="accent"
               href="/section/outdoors"
             >
+              <SectionNewsTicker section="outdoors" />
               <div className="p-4">
                 <p className="text-muted-foreground font-serif text-sm italic">
-                  Fishing reports, hunting regulations, trail conditions, and outdoor recreation news coming soon.
+                  Fishing, hunting, trail conditions, and outdoor recreation news.
                 </p>
                 <div className="mt-4 pt-4 border-t border-border">
                   <h4 className="font-display text-sm font-bold text-foreground mb-2">Seasonal Focus</h4>

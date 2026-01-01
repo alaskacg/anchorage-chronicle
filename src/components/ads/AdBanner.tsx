@@ -112,17 +112,27 @@ interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(({ variant = 'large', adId, className, ...props }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isEntering, setIsEntering] = useState(true);
 
   // Always use the requested adId or default to the first ad (no rotation)
   const ad = adId ? ads.find(a => a.id === adId) || ads[0] : ads[0];
 
-  // Initial visibility
+  // Initial visibility with entrance animation
   useEffect(() => {
-    setIsVisible(true);
+    const enterTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    const animTimer = setTimeout(() => {
+      setIsEntering(false);
+    }, 800);
+    return () => {
+      clearTimeout(enterTimer);
+      clearTimeout(animTimer);
+    };
   }, []);
 
   if (variant === 'sidebar') {
-    return <SidebarAd ad={ad} isVisible={isVisible} />;
+    return <SidebarAd ad={ad} isVisible={isVisible} isEntering={isEntering} />;
   }
 
   if (variant === 'small') {
@@ -140,6 +150,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(({ variant = '
       isHovered={isHovered}
       setIsHovered={setIsHovered}
       className={className}
+      isEntering={isEntering}
     />
   );
 });
@@ -152,13 +163,15 @@ function LargeAd({
   isVisible, 
   isHovered, 
   setIsHovered,
-  className 
+  className,
+  isEntering
 }: { 
   ad: AdConfig; 
   isVisible: boolean; 
   isHovered: boolean;
   setIsHovered: (v: boolean) => void;
   className?: string;
+  isEntering?: boolean;
 }) {
   return (
     <a
@@ -166,8 +179,10 @@ function LargeAd({
       target="_blank"
       rel="noopener noreferrer sponsored"
       className={cn(
-        "group relative block w-full overflow-hidden rounded-lg transition-all duration-500",
+        "group relative block w-full overflow-hidden rounded-lg",
+        "transition-all duration-700 ease-out",
         "hover:shadow-2xl hover:shadow-primary/20",
+        isEntering && "ad-entrance-large",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -176,25 +191,32 @@ function LargeAd({
       {/* Background Image with Parallax Effect */}
       <div 
         className={cn(
-          "absolute inset-0 bg-cover bg-center transition-transform duration-700",
+          "absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out",
           isHovered ? "scale-110" : "scale-100"
         )}
         style={{ backgroundImage: `url(${ad.bgImage})` }}
       />
       
-      {/* Gradient Overlay */}
+      {/* Gradient Overlay with animated shift */}
       <div className={cn(
-        "absolute inset-0 bg-gradient-to-r transition-opacity duration-500",
+        "absolute inset-0 bg-gradient-to-r transition-all duration-700 ease-out",
         ad.accentColor,
-        isHovered ? "opacity-95" : "opacity-85"
+        isHovered ? "opacity-90" : "opacity-85"
       )} />
 
       {/* Animated Pattern Overlay */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:24px_24px] animate-pulse" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:24px_24px]" />
       </div>
 
-      {/* Content - reduced padding by ~40% */}
+      {/* Floating particles effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="ad-particle ad-particle-1" />
+        <div className="ad-particle ad-particle-2" />
+        <div className="ad-particle ad-particle-3" />
+      </div>
+
+      {/* Content */}
       <div className={cn(
         "relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 p-4 md:p-5 text-white",
         "transition-all duration-500",
@@ -202,17 +224,18 @@ function LargeAd({
       )}>
         {/* Left Content */}
         <div className="flex-1 text-center md:text-left">
-          {/* Logo/Icon */}
+          {/* Logo/Icon with pulse effect */}
           <div className={cn(
             "inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4",
             "bg-white/20 backdrop-blur-sm border border-white/30",
-            "transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+            "transition-all duration-500 group-hover:scale-110 group-hover:rotate-3",
+            "ad-icon-pulse"
           )}>
             {ad.icon}
           </div>
 
           {/* Brand Name */}
-          <h3 className="font-display text-3xl md:text-4xl font-bold mb-2 tracking-tight">
+          <h3 className="font-display text-3xl md:text-4xl font-bold mb-2 tracking-tight ad-text-shimmer">
             {ad.name}
           </h3>
 
@@ -220,7 +243,7 @@ function LargeAd({
           <p className="text-lg md:text-xl font-medium text-white/90 mb-4 relative inline-block">
             {ad.slogan}
             <span className={cn(
-              "absolute bottom-0 left-0 h-0.5 bg-white/60 transition-all duration-500",
+              "absolute bottom-0 left-0 h-0.5 bg-white/60 transition-all duration-500 ease-out",
               isHovered ? "w-full" : "w-0"
             )} />
           </p>
@@ -230,7 +253,7 @@ function LargeAd({
             {ad.description}
           </p>
 
-          {/* Features */}
+          {/* Features with stagger animation */}
           <div className="flex flex-wrap gap-3 mb-6 justify-center md:justify-start">
             {ad.features.map((feature, i) => (
               <span 
@@ -238,10 +261,10 @@ function LargeAd({
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium",
                   "bg-white/20 backdrop-blur-sm border border-white/30",
-                  "transition-all duration-300 hover:bg-white/30",
-                  "animate-fade-in"
+                  "transition-all duration-300 hover:bg-white/30 hover:scale-105",
+                  "ad-feature-tag"
                 )}
-                style={{ animationDelay: `${i * 100}ms` }}
+                style={{ animationDelay: `${i * 150}ms` }}
               >
                 {feature}
               </span>
@@ -251,7 +274,7 @@ function LargeAd({
 
         {/* Right Content - Stats & CTA */}
         <div className="flex flex-col items-center md:items-end gap-6">
-          {/* Stats */}
+          {/* Stats with hover effects */}
           {ad.stats && (
             <div className="flex gap-6">
               {ad.stats.map((stat, i) => (
@@ -259,8 +282,10 @@ function LargeAd({
                   key={i} 
                   className={cn(
                     "text-center p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20",
-                    "transition-all duration-300 hover:bg-white/20 hover:scale-105"
+                    "transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:-translate-y-1",
+                    "ad-stat-card"
                   )}
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className="text-2xl font-bold font-display">{stat.value}</div>
                   <div className="text-xs text-white/70 uppercase tracking-wider">{stat.label}</div>
@@ -269,13 +294,14 @@ function LargeAd({
             </div>
           )}
 
-          {/* CTA Button */}
+          {/* CTA Button with pulse */}
           <button className={cn(
             "flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg",
             "bg-white text-gray-900 shadow-lg",
             "transition-all duration-300",
             "hover:shadow-xl hover:scale-105",
-            "group-hover:bg-accent group-hover:text-primary"
+            "group-hover:bg-accent group-hover:text-primary",
+            "ad-cta-pulse"
           )}>
             Visit {ad.name}
             <ChevronRight className={cn(
@@ -292,13 +318,8 @@ function LargeAd({
         </div>
       </div>
 
-      {/* Shimmer Effect on Hover */}
-      <div className={cn(
-        "absolute inset-0 transition-opacity duration-500 pointer-events-none",
-        "bg-gradient-to-r from-transparent via-white/10 to-transparent",
-        "-translate-x-full group-hover:translate-x-full",
-        "transition-transform duration-1000"
-      )} />
+      {/* Shimmer sweep effect */}
+      <div className="ad-shimmer-sweep" />
     </a>
   );
 }
@@ -311,17 +332,19 @@ function MediumAd({ ad, isVisible, className }: { ad: AdConfig; isVisible: boole
       target="_blank"
       rel="noopener noreferrer sponsored"
       className={cn(
-        "group relative block overflow-hidden rounded-lg transition-all duration-500",
+        "group relative block overflow-hidden rounded-lg",
+        "transition-all duration-500 ease-out",
         "hover:shadow-xl hover:shadow-primary/10",
+        "ad-entrance-medium",
         className
       )}
     >
       {/* Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
         style={{ backgroundImage: `url(${ad.bgImage})` }}
       />
-      <div className={cn("absolute inset-0 bg-gradient-to-t", ad.accentColor)} />
+      <div className={cn("absolute inset-0 bg-gradient-to-t transition-opacity duration-500", ad.accentColor)} />
 
       {/* Content */}
       <div className={cn(
@@ -330,16 +353,19 @@ function MediumAd({ ad, isVisible, className }: { ad: AdConfig; isVisible: boole
         isVisible ? "opacity-100" : "opacity-0"
       )}>
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-lg bg-white/20 backdrop-blur-sm">
+          <div className="p-2 rounded-lg bg-white/20 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
             {ad.icon}
           </div>
-          <h4 className="font-display text-xl font-bold">{ad.name}</h4>
+          <h4 className="font-display text-xl font-bold ad-text-shimmer">{ad.name}</h4>
         </div>
         <p className="text-sm text-white/80 mb-3 line-clamp-2">{ad.slogan}</p>
-        <div className="flex items-center gap-2 text-sm font-medium group-hover:text-accent transition-colors">
-          Learn More <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <div className="flex items-center gap-2 text-sm font-medium group-hover:text-accent transition-all duration-300">
+          Learn More <ChevronRight className="h-4 w-4 group-hover:translate-x-2 transition-transform duration-300" />
         </div>
       </div>
+
+      {/* Shimmer effect */}
+      <div className="ad-shimmer-sweep" />
     </a>
   );
 }
@@ -378,59 +404,73 @@ function SmallAd({ ad, isVisible, className }: { ad: AdConfig; isVisible: boolea
 }
 
 // Sidebar Ad
-function SidebarAd({ ad, isVisible }: { ad: AdConfig; isVisible: boolean }) {
+function SidebarAd({ ad, isVisible, isEntering }: { ad: AdConfig; isVisible: boolean; isEntering?: boolean }) {
   return (
     <a
       href={ad.url}
       target="_blank"
       rel="noopener noreferrer sponsored"
-      className="group block overflow-hidden rounded-lg border border-border bg-card hover:shadow-xl transition-all duration-500"
+      className={cn(
+        "group block overflow-hidden rounded-lg border border-border bg-card",
+        "transition-all duration-500 ease-out",
+        "hover:shadow-xl hover:border-primary/30",
+        isEntering && "ad-entrance-sidebar"
+      )}
     >
-      {/* Image Header */}
-      <div 
-        className="h-32 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-        style={{ backgroundImage: `url(${ad.bgImage})` }}
-      />
+      {/* Image Header with zoom effect */}
+      <div className="overflow-hidden">
+        <div 
+          className="h-32 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+          style={{ backgroundImage: `url(${ad.bgImage})` }}
+        />
+      </div>
 
       {/* Content */}
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="p-4 relative">
+        {/* Subtle animated background on hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <div className={cn(
+              "p-1.5 rounded text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6",
+              ad.id === 'aklistings' && "bg-slate-800",
+              ad.id === 'akguidesearch' && "bg-secondary",
+              ad.id === 'consulting' && "bg-primary",
+              ad.id === 'boats' && "bg-sky-700",
+              ad.id === 'mining' && "bg-amber-700"
+            )}>
+              {ad.icon}
+            </div>
+            <div>
+              <h5 className="font-display font-bold text-sm text-foreground">{ad.name}</h5>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Sponsored</span>
+            </div>
+          </div>
+
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{ad.description}</p>
+
+          {/* Trust Indicators with subtle animation */}
+          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
+            <span className="flex items-center gap-1 transition-transform duration-300 hover:scale-105">
+              <Shield className="h-3 w-3 text-secondary" /> Verified
+            </span>
+            <span className="flex items-center gap-1 transition-transform duration-300 hover:scale-105">
+              <Star className="h-3 w-3 text-accent" /> Trusted
+            </span>
+            <span className="flex items-center gap-1 transition-transform duration-300 hover:scale-105">
+              <Users className="h-3 w-3 text-primary" /> Local
+            </span>
+          </div>
+
           <div className={cn(
-            "p-1.5 rounded text-white",
-            ad.id === 'aklistings' && "bg-slate-800",
-            ad.id === 'akguidesearch' && "bg-secondary",
-            ad.id === 'consulting' && "bg-primary",
-            ad.id === 'boats' && "bg-sky-700",
-            ad.id === 'mining' && "bg-amber-700"
+            "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold",
+            "transition-all duration-300",
+            "bg-primary text-primary-foreground",
+            "group-hover:bg-accent group-hover:text-primary group-hover:scale-[1.02]"
           )}>
-            {ad.icon}
+            Visit Site <ExternalLink className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </div>
-          <div>
-            <h5 className="font-display font-bold text-sm text-foreground">{ad.name}</h5>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Sponsored</span>
-          </div>
-        </div>
-
-        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{ad.description}</p>
-
-        {/* Trust Indicators */}
-        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-          <span className="flex items-center gap-1">
-            <Shield className="h-3 w-3 text-forest" /> Verified
-          </span>
-          <span className="flex items-center gap-1">
-            <Star className="h-3 w-3 text-gold" /> Trusted
-          </span>
-          <span className="flex items-center gap-1">
-            <Users className="h-3 w-3 text-primary" /> Local
-          </span>
-        </div>
-
-        <div className={cn(
-          "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
-          "bg-primary text-primary-foreground group-hover:bg-accent group-hover:text-primary"
-        )}>
-          Visit Site <ExternalLink className="h-4 w-4" />
         </div>
       </div>
     </a>

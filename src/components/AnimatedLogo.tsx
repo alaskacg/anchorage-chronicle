@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId } from 'react';
 
 interface AnimatedLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -13,222 +13,262 @@ export function AnimatedLogo({
   variant = 'light',
   compact = false,
 }: AnimatedLogoProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  // Unique IDs for SVG defs to avoid conflicts
+  const id = useId();
+  const gradientId = `logo-gradient-${id}`;
+  const glowId = `logo-glow-${id}`;
+  const auroraId = `aurora-gradient-${id}`;
+  const starGlowId = `star-glow-${id}`;
 
   const sizeClasses = {
-    sm: { icon: 'h-10 w-10', text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
-    md: { icon: 'h-14 w-14', text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
-    lg: { icon: 'h-18 w-18', text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
-    xl: { icon: 'h-24 w-24', text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
-  };
-
-  const iconSizes = {
-    sm: 40,
-    md: 52,
-    lg: 72,
-    xl: 96,
+    sm: { icon: 40, text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
+    md: { icon: 56, text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
+    lg: { icon: 80, text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
+    xl: { icon: 100, text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
   };
 
   const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-2 sm:gap-3 md:gap-4';
   const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-primary';
   const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground';
-  const iconSize = iconSizes[size];
+  const iconSize = sizeClasses[size].icon;
 
   return (
-    <div 
-      className={`flex items-center ${gapClass} group cursor-pointer`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Animated Logo Icon - Always animating */}
+    <div className={`flex items-center ${gapClass} group cursor-pointer`}>
+      {/* Advanced Animated Logo */}
       <div className="relative shrink-0">
         <svg
           width={iconSize}
           height={iconSize}
-          viewBox="0 0 120 120"
-          className={`transition-transform duration-500 ${isHovered ? 'scale-110' : 'scale-100'}`}
+          viewBox="0 0 100 100"
+          className="transition-transform duration-500 group-hover:scale-110"
         >
           <defs>
-            <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--primary))" />
-              <stop offset="100%" stopColor="hsl(var(--primary) / 0.8)" />
+            {/* Dynamic gradient for main emblem */}
+            <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--primary))">
+                <animate
+                  attributeName="stop-color"
+                  values="hsl(var(--primary));hsl(var(--primary) / 0.85);hsl(var(--primary))"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+              </stop>
+              <stop offset="100%" stopColor="hsl(var(--primary) / 0.7)" />
             </linearGradient>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--accent))" />
-              <stop offset="100%" stopColor="hsl(var(--accent) / 0.7)" />
+
+            {/* Aurora borealis gradient */}
+            <linearGradient id={auroraId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(var(--secondary))">
+                <animate
+                  attributeName="offset"
+                  values="0;0.3;0"
+                  dur="6s"
+                  repeatCount="indefinite"
+                />
+              </stop>
+              <stop offset="50%" stopColor="hsl(var(--accent))">
+                <animate
+                  attributeName="offset"
+                  values="0.5;0.7;0.5"
+                  dur="6s"
+                  repeatCount="indefinite"
+                />
+              </stop>
+              <stop offset="100%" stopColor="hsl(var(--secondary) / 0.6)" />
             </linearGradient>
-            <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+
+            {/* Glow filter for star */}
+            <filter id={starGlowId} x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feFlood floodColor="hsl(var(--accent))" floodOpacity="0.8" />
+              <feComposite in2="blur" operator="in" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+
+            {/* Outer glow */}
+            <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feFlood floodColor="hsl(var(--accent))" floodOpacity="0.4" />
+              <feComposite in2="blur" operator="in" />
+              <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
-          {/* Outer rotating ring - always spinning */}
-          <circle
-            cx="60"
-            cy="60"
-            r="56"
-            className="fill-none stroke-accent/30"
-            strokeWidth="1"
-            strokeDasharray="8 4"
-            style={{
-              animation: 'logo-spin 20s linear infinite',
-              transformOrigin: '60px 60px',
-            }}
-          />
-          
-          {/* Compass tick marks - rotate opposite direction */}
-          <g style={{
-            animation: 'logo-spin-reverse 30s linear infinite',
-            transformOrigin: '60px 60px',
-          }}>
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+          {/* Outer rotating compass ring */}
+          <g className="logo-compass-ring">
+            <circle
+              cx="50"
+              cy="50"
+              r="47"
+              fill="none"
+              stroke="hsl(var(--accent) / 0.3)"
+              strokeWidth="0.5"
+              strokeDasharray="4 3"
+            />
+            {/* Compass cardinal points */}
+            {[0, 90, 180, 270].map((angle) => (
               <line
-                key={angle}
-                x1="60"
-                y1="8"
-                x2="60"
-                y2={angle % 90 === 0 ? "14" : "11"}
-                className={angle % 90 === 0 ? "stroke-accent" : "stroke-muted-foreground/40"}
-                strokeWidth={angle % 90 === 0 ? "2" : "1"}
-                transform={`rotate(${angle} 60 60)`}
+                key={`cardinal-${angle}`}
+                x1="50"
+                y1="5"
+                x2="50"
+                y2="9"
+                stroke="hsl(var(--accent))"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                transform={`rotate(${angle} 50 50)`}
+              />
+            ))}
+            {/* Intercardinal points */}
+            {[45, 135, 225, 315].map((angle) => (
+              <line
+                key={`inter-${angle}`}
+                x1="50"
+                y1="6"
+                x2="50"
+                y2="8"
+                stroke="hsl(var(--muted-foreground) / 0.5)"
+                strokeWidth="0.75"
+                transform={`rotate(${angle} 50 50)`}
               />
             ))}
           </g>
-          
-          {/* Main shield shape */}
-          <path
-            d="M60 16 
-               C75 16, 88 22, 96 35
-               C104 48, 104 65, 96 80
-               C88 95, 75 104, 60 104
-               C45 104, 32 95, 24 80
-               C16 65, 16 48, 24 35
-               C32 22, 45 16, 60 16Z"
-            fill="url(#shieldGradient)"
-            className="stroke-accent/30"
-            strokeWidth="1"
-          />
-          
-          {/* Inner shield border */}
-          <path
-            d="M60 22 
-               C72 22, 82 27, 89 38
-               C96 49, 96 63, 89 76
-               C82 89, 72 96, 60 96
-               C48 96, 38 89, 31 76
-               C24 63, 24 49, 31 38
-               C38 27, 48 22, 60 22Z"
-            className="fill-none stroke-primary-foreground/20"
-            strokeWidth="1"
+
+          {/* Inner pulsing ring */}
+          <circle
+            cx="50"
+            cy="50"
+            r="42"
+            fill="none"
+            stroke="hsl(var(--accent) / 0.2)"
+            strokeWidth="0.5"
+            className="logo-inner-pulse"
           />
 
-          {/* Mountain range */}
-          <g>
-            {/* Back mountains */}
+          {/* Main shield/crest shape */}
+          <path
+            d="M50 10 
+               C68 10, 83 22, 88 40
+               C93 58, 88 76, 75 86
+               C62 96, 50 96, 50 96
+               C50 96, 38 96, 25 86
+               C12 76, 7 58, 12 40
+               C17 22, 32 10, 50 10Z"
+            fill={`url(#${gradientId})`}
+            className="logo-shield"
+          />
+
+          {/* Aurora borealis waves inside shield */}
+          <g className="logo-aurora" clipPath="url(#shield-clip)">
             <path
-              d="M28 78 L40 55 L48 62 L58 42 L68 58 L78 50 L92 78 Z"
-              className="fill-primary-foreground/30"
+              d="M15 55 Q32 45, 50 52 T85 48"
+              fill="none"
+              stroke={`url(#${auroraId})`}
+              strokeWidth="2"
+              strokeOpacity="0.5"
+              className="aurora-wave-1"
             />
-            {/* Front mountains - Denali-inspired */}
             <path
-              d="M32 78 L45 52 L52 60 L60 38 L68 55 L75 48 L88 78 Z"
-              className="fill-primary-foreground"
-            />
-            {/* Snow caps with shimmer */}
-            <path
-              d="M60 38 L55 48 L60 45 L65 48 Z"
-              className="fill-accent"
-              style={{
-                animation: 'logo-shimmer 3s ease-in-out infinite',
-              }}
+              d="M15 50 Q35 40, 50 47 T85 43"
+              fill="none"
+              stroke={`url(#${auroraId})`}
+              strokeWidth="1.5"
+              strokeOpacity="0.4"
+              className="aurora-wave-2"
             />
             <path
-              d="M75 48 L72 54 L75 52 L78 54 Z"
-              className="fill-accent/70"
-              style={{
-                animation: 'logo-shimmer 3s ease-in-out infinite 0.5s',
-              }}
+              d="M15 60 Q30 52, 50 58 T85 54"
+              fill="none"
+              stroke={`url(#${auroraId})`}
+              strokeWidth="1"
+              strokeOpacity="0.3"
+              className="aurora-wave-3"
             />
           </g>
-          
-          {/* North Star - pulsing */}
-          <g filter="url(#starGlow)">
+
+          {/* Denali-inspired mountain range */}
+          <g className="logo-mountains">
+            {/* Background range */}
+            <path
+              d="M18 78 L28 58 L36 65 L50 42 L64 62 L72 55 L82 78 Z"
+              fill="hsl(var(--primary-foreground) / 0.25)"
+            />
+            {/* Foreground main peak (Denali) */}
+            <path
+              d="M22 78 L35 55 L42 62 L50 38 L58 58 L65 52 L78 78 Z"
+              fill="hsl(var(--primary-foreground))"
+              className="logo-mountain-main"
+            />
+            {/* Snow caps with shimmer effect */}
+            <path
+              d="M50 38 L45 50 L50 47 L55 50 Z"
+              fill="hsl(var(--accent))"
+              className="logo-snowcap-main"
+            />
+            <path
+              d="M65 52 L62 58 L65 56 L68 58 Z"
+              fill="hsl(var(--accent) / 0.7)"
+              className="logo-snowcap-side"
+            />
+          </g>
+
+          {/* North Star - pulsing with glow */}
+          <g filter={`url(#${starGlowId})`} className="logo-north-star">
             <polygon
-              points="60,18 62,24 68,24 63,28 65,35 60,30 55,35 57,28 52,24 58,24"
-              fill="url(#goldGradient)"
-              style={{
-                animation: 'logo-star-pulse 2s ease-in-out infinite',
-                transformOrigin: '60px 26px',
-              }}
+              points="50,12 52,18 58,18 53,22 55,28 50,24 45,28 47,22 42,18 48,18"
+              fill="hsl(var(--accent))"
             />
             {/* Star rays */}
-            <line x1="60" y1="16" x2="60" y2="12" className="stroke-accent" strokeWidth="1.5" strokeLinecap="round"
-              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite' }}
-            />
-            <line x1="51" y1="20" x2="48" y2="17" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round"
-              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite 0.3s' }}
-            />
-            <line x1="69" y1="20" x2="72" y2="17" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round"
-              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite 0.6s' }}
+            <line x1="50" y1="10" x2="50" y2="6" stroke="hsl(var(--accent))" strokeWidth="1" strokeLinecap="round" className="star-ray" />
+            <line x1="42" y1="14" x2="39" y2="11" stroke="hsl(var(--accent) / 0.6)" strokeWidth="0.75" strokeLinecap="round" className="star-ray-side" />
+            <line x1="58" y1="14" x2="61" y2="11" stroke="hsl(var(--accent) / 0.6)" strokeWidth="0.75" strokeLinecap="round" className="star-ray-side" />
+          </g>
+
+          {/* "AC" Monogram with elegant styling */}
+          <g className="logo-monogram">
+            <text
+              x="50"
+              y="75"
+              textAnchor="middle"
+              fill="hsl(var(--primary-foreground))"
+              fontSize="16"
+              fontWeight="700"
+              fontFamily="var(--font-display), Georgia, serif"
+              className="logo-text"
+            >
+              AC
+            </text>
+            {/* Decorative underline */}
+            <line
+              x1="38"
+              y1="79"
+              x2="62"
+              y2="79"
+              stroke="hsl(var(--accent) / 0.6)"
+              strokeWidth="0.75"
+              className="logo-underline"
             />
           </g>
-          
-          {/* "AC" monogram */}
-          <text
-            x="60"
-            y="72"
-            textAnchor="middle"
-            className="fill-primary-foreground font-bold"
-            style={{ fontSize: '14px', fontFamily: 'var(--font-display), serif' }}
-          >
-            AC
-          </text>
 
-          {/* Continuous pulse rings */}
-          <circle
-            cx="60"
-            cy="60"
-            r="52"
-            className="fill-none stroke-accent/40"
-            strokeWidth="1"
-            style={{
-              animation: 'logo-pulse-ring 3s ease-out infinite',
-            }}
-          />
-          <circle
-            cx="60"
-            cy="60"
-            r="52"
-            className="fill-none stroke-accent/20"
-            strokeWidth="0.5"
-            style={{
-              animation: 'logo-pulse-ring 3s ease-out infinite 1.5s',
-            }}
-          />
+          {/* Emanating pulse rings */}
+          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--accent) / 0.4)" strokeWidth="1" className="pulse-ring-1" />
+          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--accent) / 0.2)" strokeWidth="0.5" className="pulse-ring-2" />
         </svg>
-        
-        {/* Ambient glow - always on */}
-        <div 
-          className="absolute inset-0 rounded-full -z-10"
-          style={{
-            background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 60%)',
-            filter: 'blur(10px)',
-            transform: 'scale(1.3)',
-            animation: 'logo-glow-pulse 4s ease-in-out infinite',
-          }}
-        />
+
+        {/* Ambient glow behind logo */}
+        <div className="absolute inset-0 -z-10 logo-ambient-glow" />
       </div>
 
       {/* Text */}
       {showText && (
         <div className="min-w-0">
-          <h1 
-            className={`font-display ${sizeClasses[size].text} font-bold tracking-tight leading-none ${titleColorClass} transition-all duration-300`}
-          >
+          <h1 className={`font-display ${sizeClasses[size].text} font-bold tracking-tight leading-none ${titleColorClass} transition-all duration-300`}>
             <span className="relative inline-block">
               The
               <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500" />
@@ -245,7 +285,7 @@ export function AnimatedLogo({
           {!compact && (
             <p className={`${sizeClasses[size].sub} mt-1 sm:mt-1.5 italic ${subtitleColorClass} flex items-center gap-1 sm:gap-2 flex-wrap`}>
               <span className="font-serif">Alaska's Voice Since 2026</span>
-              <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent" style={{ animation: 'logo-dot-pulse 2s ease-in-out infinite' }} />
+              <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent logo-dot-pulse" />
               <span className="font-serif hidden sm:inline">Serving the Last Frontier</span>
             </p>
           )}
@@ -253,37 +293,149 @@ export function AnimatedLogo({
       )}
 
       <style>{`
-        @keyframes logo-spin {
+        /* Compass ring rotation */
+        .logo-compass-ring {
+          animation: compass-rotate 40s linear infinite;
+          transform-origin: 50px 50px;
+        }
+        @keyframes compass-rotate {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        @keyframes logo-spin-reverse {
-          from { transform: rotate(360deg); }
-          to { transform: rotate(0deg); }
+
+        /* Inner pulse ring */
+        .logo-inner-pulse {
+          animation: inner-pulse 3s ease-in-out infinite;
         }
-        @keyframes logo-pulse-ring {
-          0% { r: 52; opacity: 0.5; stroke-width: 1.5; }
-          100% { r: 60; opacity: 0; stroke-width: 0.5; }
+        @keyframes inner-pulse {
+          0%, 100% { r: 42; stroke-opacity: 0.2; }
+          50% { r: 43; stroke-opacity: 0.4; }
         }
-        @keyframes logo-star-pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.15); opacity: 0.9; }
+
+        /* Shield subtle pulse */
+        .logo-shield {
+          animation: shield-glow 4s ease-in-out infinite;
         }
-        @keyframes logo-ray-pulse {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
+        @keyframes shield-glow {
+          0%, 100% { filter: brightness(1); }
+          50% { filter: brightness(1.05); }
         }
-        @keyframes logo-shimmer {
-          0%, 100% { opacity: 0.8; }
-          50% { opacity: 1; }
+
+        /* Aurora wave animations */
+        .aurora-wave-1 {
+          animation: aurora-flow-1 8s ease-in-out infinite;
         }
-        @keyframes logo-glow-pulse {
-          0%, 100% { opacity: 0.3; transform: scale(1.3); }
-          50% { opacity: 0.5; transform: scale(1.4); }
+        .aurora-wave-2 {
+          animation: aurora-flow-2 10s ease-in-out infinite;
         }
-        @keyframes logo-dot-pulse {
+        .aurora-wave-3 {
+          animation: aurora-flow-3 12s ease-in-out infinite;
+        }
+        @keyframes aurora-flow-1 {
+          0%, 100% { d: path("M15 55 Q32 45, 50 52 T85 48"); stroke-opacity: 0.5; }
+          50% { d: path("M15 53 Q35 48, 50 50 T85 50"); stroke-opacity: 0.7; }
+        }
+        @keyframes aurora-flow-2 {
+          0%, 100% { d: path("M15 50 Q35 40, 50 47 T85 43"); stroke-opacity: 0.4; }
+          50% { d: path("M15 48 Q38 43, 50 45 T85 45"); stroke-opacity: 0.6; }
+        }
+        @keyframes aurora-flow-3 {
+          0%, 100% { d: path("M15 60 Q30 52, 50 58 T85 54"); stroke-opacity: 0.3; }
+          50% { d: path("M15 58 Q33 55, 50 56 T85 56"); stroke-opacity: 0.5; }
+        }
+
+        /* Mountain shimmer */
+        .logo-mountain-main {
+          animation: mountain-shimmer 6s ease-in-out infinite;
+        }
+        @keyframes mountain-shimmer {
+          0%, 100% { fill-opacity: 1; }
+          50% { fill-opacity: 0.95; }
+        }
+
+        /* Snow cap sparkle */
+        .logo-snowcap-main {
+          animation: snowcap-sparkle 3s ease-in-out infinite;
+        }
+        .logo-snowcap-side {
+          animation: snowcap-sparkle 3s ease-in-out infinite 0.5s;
+        }
+        @keyframes snowcap-sparkle {
+          0%, 100% { fill-opacity: 0.85; }
+          50% { fill-opacity: 1; filter: brightness(1.2); }
+        }
+
+        /* North Star pulsing */
+        .logo-north-star {
+          animation: star-pulse 2.5s ease-in-out infinite;
+          transform-origin: 50px 20px;
+        }
+        @keyframes star-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+
+        /* Star rays */
+        .star-ray {
+          animation: ray-pulse 2s ease-in-out infinite;
+        }
+        .star-ray-side {
+          animation: ray-pulse 2s ease-in-out infinite 0.3s;
+        }
+        @keyframes ray-pulse {
+          0%, 100% { stroke-opacity: 0.6; }
+          50% { stroke-opacity: 1; }
+        }
+
+        /* Monogram text effect */
+        .logo-text {
+          animation: text-glow 4s ease-in-out infinite;
+        }
+        @keyframes text-glow {
+          0%, 100% { fill-opacity: 1; }
+          50% { fill-opacity: 0.9; }
+        }
+
+        /* Underline animation */
+        .logo-underline {
+          animation: underline-shimmer 3s ease-in-out infinite;
+        }
+        @keyframes underline-shimmer {
+          0%, 100% { stroke-opacity: 0.6; }
+          50% { stroke-opacity: 1; x1: 36; x2: 64; }
+        }
+
+        /* Pulse rings emanating outward */
+        .pulse-ring-1 {
+          animation: pulse-ring 3.5s ease-out infinite;
+        }
+        .pulse-ring-2 {
+          animation: pulse-ring 3.5s ease-out infinite 1.75s;
+        }
+        @keyframes pulse-ring {
+          0% { r: 44; stroke-opacity: 0.5; stroke-width: 1.5; }
+          100% { r: 52; stroke-opacity: 0; stroke-width: 0.25; }
+        }
+
+        /* Ambient glow */
+        .logo-ambient-glow {
+          background: radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 60%);
+          filter: blur(12px);
+          transform: scale(1.4);
+          animation: ambient-pulse 5s ease-in-out infinite;
+        }
+        @keyframes ambient-pulse {
+          0%, 100% { opacity: 0.3; transform: scale(1.4); }
+          50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        /* Dot pulse for tagline */
+        .logo-dot-pulse {
+          animation: dot-pulse 2s ease-in-out infinite;
+        }
+        @keyframes dot-pulse {
           0%, 100% { opacity: 0.6; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
+          50% { opacity: 1; transform: scale(1.3); }
         }
       `}</style>
     </div>
