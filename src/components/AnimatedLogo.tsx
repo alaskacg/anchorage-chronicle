@@ -3,13 +3,7 @@ import { useEffect, useState } from 'react';
 interface AnimatedLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
-  /**
-   * Color context for the lockup.
-   * - light: placed on light backgrounds (use dark/primary text)
-   * - dark: placed on dark backgrounds (use primary-foreground text)
-   */
   variant?: 'light' | 'dark';
-  /** When true, use a tighter lockup for compact headers (homepage). */
   compact?: boolean;
 }
 
@@ -20,11 +14,11 @@ export function AnimatedLogo({
   compact = false,
 }: AnimatedLogoProps) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    // Trigger initial animation
     setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 1000);
+    const timer = setTimeout(() => setIsAnimating(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -36,101 +30,211 @@ export function AnimatedLogo({
   };
 
   const iconSizes = {
-    sm: 40,
-    md: 56,
-    lg: 72,
-    xl: 96,
+    sm: 44,
+    md: 60,
+    lg: 80,
+    xl: 100,
   };
 
   const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-3 md:gap-4';
-
   const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-primary';
-  const subtitleColorClass =
-    variant === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground';
-
+  const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground';
   const iconSize = iconSizes[size];
+
+  const active = isAnimating || isHovered;
 
   return (
     <div 
       className={`flex items-center ${gapClass} group cursor-pointer`}
-      onMouseEnter={() => setIsAnimating(true)}
-      onMouseLeave={() => setIsAnimating(false)}
+      onMouseEnter={() => { setIsAnimating(true); setIsHovered(true); }}
+      onMouseLeave={() => { setIsAnimating(false); setIsHovered(false); }}
     >
       {/* Animated Logo Icon */}
       <div className="relative shrink-0">
         <svg
           width={iconSize}
           height={iconSize}
-          viewBox="0 0 100 100"
-          className={`transition-transform duration-500 ${isAnimating ? 'scale-110' : 'scale-100'}`}
+          viewBox="0 0 120 120"
+          className={`transition-transform duration-700 ${active ? 'scale-105' : 'scale-100'}`}
         >
-          {/* Background circle */}
+          <defs>
+            {/* Gradient for the shield */}
+            <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" />
+              <stop offset="100%" stopColor="hsl(var(--primary) / 0.8)" />
+            </linearGradient>
+            
+            {/* Gold accent gradient */}
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--accent))" />
+              <stop offset="100%" stopColor="hsl(var(--accent) / 0.7)" />
+            </linearGradient>
+            
+            {/* Glow filter */}
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Outer decorative ring */}
           <circle
-            cx="50"
-            cy="50"
-            r="46"
-            className="fill-primary stroke-primary"
-            strokeWidth="2"
+            cx="60"
+            cy="60"
+            r="56"
+            className="fill-none stroke-accent/20"
+            strokeWidth="1"
           />
           
-          {/* Inner ring */}
-          <circle
-            cx="50"
-            cy="50"
-            r="38"
-            className="fill-none stroke-accent"
-            strokeWidth="2"
-            strokeDasharray="4 2"
-            style={{
-              animation: isAnimating ? 'spin 8s linear infinite' : 'none',
-            }}
-          />
-          
-          {/* Mountain silhouette */}
-          <path
-            d="M20 70 L35 45 L45 55 L60 30 L80 70 Z"
-            className="fill-primary-foreground"
-            style={{
-              transform: isAnimating ? 'translateY(-2px)' : 'translateY(0)',
-              transition: 'transform 0.5s ease-out',
-            }}
-          />
-          
-          {/* Star/North Star */}
+          {/* Animated compass points */}
           <g 
             className="origin-center"
             style={{
-              transform: isAnimating ? 'scale(1.1)' : 'scale(1)',
-              transition: 'transform 0.3s ease-out',
+              transform: `rotate(${active ? 15 : 0}deg)`,
+              transformOrigin: '60px 60px',
+              transition: 'transform 0.8s ease-out',
             }}
           >
-            <polygon
-              points="50,15 52,22 60,22 54,27 56,35 50,30 44,35 46,27 40,22 48,22"
-              className="fill-accent"
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+              <line
+                key={angle}
+                x1="60"
+                y1="8"
+                x2="60"
+                y2={angle % 90 === 0 ? "14" : "11"}
+                className={angle % 90 === 0 ? "stroke-accent" : "stroke-muted-foreground/40"}
+                strokeWidth={angle % 90 === 0 ? "2" : "1"}
+                transform={`rotate(${angle} 60 60)`}
+              />
+            ))}
+          </g>
+          
+          {/* Main shield/badge shape */}
+          <path
+            d="M60 16 
+               C75 16, 88 22, 96 35
+               C104 48, 104 65, 96 80
+               C88 95, 75 104, 60 104
+               C45 104, 32 95, 24 80
+               C16 65, 16 48, 24 35
+               C32 22, 45 16, 60 16Z"
+            fill="url(#shieldGradient)"
+            className="stroke-accent/30"
+            strokeWidth="1"
+          />
+          
+          {/* Inner shield border */}
+          <path
+            d="M60 22 
+               C72 22, 82 27, 89 38
+               C96 49, 96 63, 89 76
+               C82 89, 72 96, 60 96
+               C48 96, 38 89, 31 76
+               C24 63, 24 49, 31 38
+               C38 27, 48 22, 60 22Z"
+            className="fill-none stroke-primary-foreground/20"
+            strokeWidth="1"
+          />
+
+          {/* Mountain range - layered */}
+          <g style={{
+            transform: active ? 'translateY(-1px)' : 'translateY(0)',
+            transition: 'transform 0.5s ease-out',
+          }}>
+            {/* Back mountains */}
+            <path
+              d="M28 78 L40 55 L48 62 L58 42 L68 58 L78 50 L92 78 Z"
+              className="fill-primary-foreground/30"
+            />
+            {/* Front mountains - Denali-inspired */}
+            <path
+              d="M32 78 L45 52 L52 60 L60 38 L68 55 L75 48 L88 78 Z"
+              className="fill-primary-foreground"
+            />
+            {/* Snow caps */}
+            <path
+              d="M60 38 L55 48 L60 45 L65 48 Z"
+              className="fill-accent/80"
+            />
+            <path
+              d="M75 48 L72 54 L75 52 L78 54 Z"
+              className="fill-accent/60"
             />
           </g>
           
+          {/* North Star - 8 pointed */}
+          <g 
+            filter={active ? "url(#glow)" : "none"}
+            style={{
+              transform: `scale(${active ? 1.15 : 1})`,
+              transformOrigin: '60px 28px',
+              transition: 'transform 0.4s ease-out',
+            }}
+          >
+            {/* Main star points */}
+            <polygon
+              points="60,20 61.5,25 67,25 62.5,28.5 64.5,34 60,30.5 55.5,34 57.5,28.5 53,25 58.5,25"
+              fill="url(#goldGradient)"
+            />
+            {/* Small accent rays */}
+            <line x1="60" y1="18" x2="60" y2="15" className="stroke-accent" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="52" y1="22" x2="50" y2="20" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round" />
+            <line x1="68" y1="22" x2="70" y2="20" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round" />
+          </g>
+          
+          {/* "AC" monogram */}
+          <g className="font-display" style={{ 
+            opacity: active ? 1 : 0.9,
+            transition: 'opacity 0.3s ease-out'
+          }}>
+            <text
+              x="60"
+              y="72"
+              textAnchor="middle"
+              className="fill-primary-foreground font-bold"
+              style={{ fontSize: '16px', fontFamily: 'var(--font-display), serif' }}
+            >
+              AC
+            </text>
+          </g>
+
           {/* Animated pulse ring */}
           <circle
-            cx="50"
-            cy="50"
-            r="44"
-            className="fill-none stroke-accent/30"
+            cx="60"
+            cy="60"
+            r="52"
+            className="fill-none stroke-accent/40"
             strokeWidth="1"
             style={{
-              animation: isAnimating ? 'pulse-ring 2s ease-out infinite' : 'none',
+              animation: active ? 'logo-pulse 2s ease-out infinite' : 'none',
+            }}
+          />
+          
+          {/* Secondary pulse */}
+          <circle
+            cx="60"
+            cy="60"
+            r="52"
+            className="fill-none stroke-accent/20"
+            strokeWidth="0.5"
+            style={{
+              animation: active ? 'logo-pulse 2s ease-out infinite 0.5s' : 'none',
             }}
           />
         </svg>
         
-        {/* Glow effect */}
+        {/* Glow effect behind logo */}
         <div 
-          className={`absolute inset-0 rounded-full transition-opacity duration-500 ${
-            isAnimating ? 'opacity-30' : 'opacity-0'
+          className={`absolute inset-0 rounded-full transition-opacity duration-500 -z-10 ${
+            active ? 'opacity-40' : 'opacity-0'
           }`}
           style={{
-            background: 'radial-gradient(circle, hsl(var(--accent)) 0%, transparent 70%)',
-            filter: 'blur(8px)',
+            background: 'radial-gradient(circle, hsl(var(--accent) / 0.4) 0%, transparent 60%)',
+            filter: 'blur(12px)',
+            transform: 'scale(1.2)',
           }}
         />
       </div>
@@ -157,7 +261,7 @@ export function AnimatedLogo({
           {!compact && (
             <p className={`${sizeClasses[size].sub} mt-1.5 italic ${subtitleColorClass} flex items-center gap-2`}>
               <span className="font-serif">Alaska's Voice Since 2026</span>
-              <span className="inline-block w-1 h-1 rounded-full bg-accent animate-pulse" />
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span className="font-serif">Serving the Last Frontier</span>
             </p>
           )}
@@ -165,13 +269,9 @@ export function AnimatedLogo({
       )}
 
       <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes pulse-ring {
-          0% { r: 44; opacity: 0.5; }
-          100% { r: 50; opacity: 0; }
+        @keyframes logo-pulse {
+          0% { r: 52; opacity: 0.6; stroke-width: 2; }
+          100% { r: 58; opacity: 0; stroke-width: 0.5; }
         }
       `}</style>
     </div>
