@@ -89,11 +89,11 @@ export function TideChart() {
 
   return (
     <Card className="bg-card border-border overflow-hidden">
-      <CardHeader className="pb-2 border-b border-border">
-        <CardTitle className="flex items-center gap-2 text-base font-display">
-          <Anchor className="h-4 w-4 text-secondary" />
+      <CardHeader className="pb-2 border-b border-border px-3 sm:px-6 py-3">
+        <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-display">
+          <Anchor className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
           <span>Cook Inlet Tides</span>
-          <span className="ml-auto text-xs font-sans text-muted-foreground font-normal">
+          <span className="ml-auto text-[10px] sm:text-xs font-sans text-muted-foreground font-normal">
             Anchorage Harbor
           </span>
         </CardTitle>
@@ -101,39 +101,39 @@ export function TideChart() {
       
       <CardContent className="p-0">
         {/* Current Tide Status */}
-        <div className="p-4 bg-secondary/5 border-b border-border">
+        <div className="p-3 sm:p-4 bg-secondary/5 border-b border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
                 Current Tide
               </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-display font-bold text-foreground">
+              <div className="flex items-baseline gap-1 sm:gap-2">
+                <span className="text-2xl sm:text-3xl font-display font-bold text-foreground">
                   {tideData.current.height}
                 </span>
-                <span className="text-sm text-muted-foreground">ft</span>
-                <div className={`flex items-center gap-1 ml-2 px-2 py-0.5 rounded text-xs font-sans ${
+                <span className="text-xs sm:text-sm text-muted-foreground">ft</span>
+                <div className={`flex items-center gap-1 ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-sans ${
                   tideData.current.trend === 'rising' 
                     ? 'bg-secondary/20 text-secondary' 
                     : tideData.current.trend === 'falling'
                     ? 'bg-accent/20 text-accent'
                     : 'bg-muted text-muted-foreground'
                 }`}>
-                  <TrendIcon className="h-3 w-3" />
+                  <TrendIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   <span className="capitalize">{tideData.current.trend}</span>
                 </div>
               </div>
             </div>
             
             <div className="text-right">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
+              <p className="text-[10px] sm:text-xs uppercase tracking-wide text-muted-foreground font-sans mb-1">
                 Next {tideData.current.nextEvent.type === 'high' ? 'High' : 'Low'}
               </p>
               <div className="flex items-center gap-1 text-foreground">
-                <Clock className="h-3 w-3 text-muted-foreground" />
-                <span className="font-display font-semibold">{tideData.current.nextEvent.time}</span>
+                <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground" />
+                <span className="font-display font-semibold text-sm sm:text-base">{tideData.current.nextEvent.time}</span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {tideData.current.nextEvent.height.toFixed(1)} ft
               </p>
             </div>

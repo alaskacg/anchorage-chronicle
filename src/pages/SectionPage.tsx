@@ -156,9 +156,9 @@ const SectionPage = () => {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-12 text-center">
-          <h1 className="font-display text-4xl text-primary mb-4">Section Not Found</h1>
-          <p className="text-muted-foreground mb-6">The section you're looking for doesn't exist.</p>
+        <main className="flex-1 container mx-auto px-3 sm:px-4 py-8 sm:py-12 text-center">
+          <h1 className="font-display text-2xl sm:text-4xl text-primary mb-4">Section Not Found</h1>
+          <p className="text-muted-foreground text-sm sm:text-base mb-6">The section you're looking for doesn't exist.</p>
           <Link to="/" className="text-accent hover:underline">Return to Home</Link>
         </main>
         <Footer />
@@ -180,10 +180,10 @@ const SectionPage = () => {
           breadcrumbs={[{ label: config.title, href: `/section/${section}` }]}
         />
 
-        <div className="container mx-auto px-4 py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
               {/* Top Stories */}
               <div>
                 <SectionHeader title="Latest Stories" showViewAll={false} />

@@ -89,26 +89,26 @@ export default function ArticlePage() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 overflow-x-auto">
+          <Link to="/" className="hover:text-primary transition-colors shrink-0">Home</Link>
           <span>/</span>
           {article.categories && (
             <>
               <Link 
                 to={`/section/${article.categories.slug}`} 
-                className="hover:text-primary transition-colors"
+                className="hover:text-primary transition-colors shrink-0"
               >
                 {article.categories.name}
               </Link>
               <span>/</span>
             </>
           )}
-          <span className="text-foreground truncate max-w-[200px]">{article.title}</span>
+          <span className="text-foreground truncate max-w-[150px] sm:max-w-[200px]">{article.title}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
           {/* Main Article Content */}
           <article className="lg:col-span-8">
             {/* Category Badge */}
@@ -122,13 +122,13 @@ export default function ArticlePage() {
             )}
 
             {/* Title */}
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-4">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight mb-3 sm:mb-4">
               {article.title}
             </h1>
 
             {/* Excerpt */}
             {article.excerpt && (
-              <p className="text-xl text-muted-foreground font-serif italic mb-6 border-l-4 border-accent pl-4">
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-serif italic mb-4 sm:mb-6 border-l-4 border-accent pl-3 sm:pl-4">
                 {article.excerpt}
               </p>
             )}

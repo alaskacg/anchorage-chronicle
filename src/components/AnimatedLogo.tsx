@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface AnimatedLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -13,66 +13,52 @@ export function AnimatedLogo({
   variant = 'light',
   compact = false,
 }: AnimatedLogoProps) {
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  useEffect(() => {
-    setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
   const sizeClasses = {
-    sm: { icon: 'h-10 w-10', text: 'text-xl', sub: 'text-[10px]' },
-    md: { icon: 'h-14 w-14', text: 'text-2xl md:text-3xl', sub: 'text-xs' },
-    lg: { icon: 'h-18 w-18', text: 'text-3xl md:text-4xl lg:text-5xl', sub: 'text-sm' },
-    xl: { icon: 'h-24 w-24', text: 'text-4xl md:text-5xl lg:text-6xl', sub: 'text-base' },
+    sm: { icon: 'h-10 w-10', text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
+    md: { icon: 'h-14 w-14', text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
+    lg: { icon: 'h-18 w-18', text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
+    xl: { icon: 'h-24 w-24', text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
   };
 
   const iconSizes = {
-    sm: 44,
-    md: 60,
-    lg: 80,
-    xl: 100,
+    sm: 40,
+    md: 52,
+    lg: 72,
+    xl: 96,
   };
 
-  const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-3 md:gap-4';
+  const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-2 sm:gap-3 md:gap-4';
   const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-primary';
   const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/80' : 'text-muted-foreground';
   const iconSize = iconSizes[size];
 
-  const active = isAnimating || isHovered;
-
   return (
     <div 
       className={`flex items-center ${gapClass} group cursor-pointer`}
-      onMouseEnter={() => { setIsAnimating(true); setIsHovered(true); }}
-      onMouseLeave={() => { setIsAnimating(false); setIsHovered(false); }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animated Logo Icon */}
+      {/* Animated Logo Icon - Always animating */}
       <div className="relative shrink-0">
         <svg
           width={iconSize}
           height={iconSize}
           viewBox="0 0 120 120"
-          className={`transition-transform duration-700 ${active ? 'scale-105' : 'scale-100'}`}
+          className={`transition-transform duration-500 ${isHovered ? 'scale-110' : 'scale-100'}`}
         >
           <defs>
-            {/* Gradient for the shield */}
             <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="hsl(var(--primary))" />
               <stop offset="100%" stopColor="hsl(var(--primary) / 0.8)" />
             </linearGradient>
-            
-            {/* Gold accent gradient */}
             <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="hsl(var(--accent))" />
               <stop offset="100%" stopColor="hsl(var(--accent) / 0.7)" />
             </linearGradient>
-            
-            {/* Glow filter */}
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <filter id="starGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
               <feMerge>
                 <feMergeNode in="coloredBlur"/>
                 <feMergeNode in="SourceGraphic"/>
@@ -80,24 +66,25 @@ export function AnimatedLogo({
             </filter>
           </defs>
 
-          {/* Outer decorative ring */}
+          {/* Outer rotating ring - always spinning */}
           <circle
             cx="60"
             cy="60"
             r="56"
-            className="fill-none stroke-accent/20"
+            className="fill-none stroke-accent/30"
             strokeWidth="1"
+            strokeDasharray="8 4"
+            style={{
+              animation: 'logo-spin 20s linear infinite',
+              transformOrigin: '60px 60px',
+            }}
           />
           
-          {/* Animated compass points */}
-          <g 
-            className="origin-center"
-            style={{
-              transform: `rotate(${active ? 15 : 0}deg)`,
-              transformOrigin: '60px 60px',
-              transition: 'transform 0.8s ease-out',
-            }}
-          >
+          {/* Compass tick marks - rotate opposite direction */}
+          <g style={{
+            animation: 'logo-spin-reverse 30s linear infinite',
+            transformOrigin: '60px 60px',
+          }}>
             {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
               <line
                 key={angle}
@@ -112,7 +99,7 @@ export function AnimatedLogo({
             ))}
           </g>
           
-          {/* Main shield/badge shape */}
+          {/* Main shield shape */}
           <path
             d="M60 16 
                C75 16, 88 22, 96 35
@@ -139,11 +126,8 @@ export function AnimatedLogo({
             strokeWidth="1"
           />
 
-          {/* Mountain range - layered */}
-          <g style={{
-            transform: active ? 'translateY(-1px)' : 'translateY(0)',
-            transition: 'transform 0.5s ease-out',
-          }}>
+          {/* Mountain range */}
+          <g>
             {/* Back mountains */}
             <path
               d="M28 78 L40 55 L48 62 L58 42 L68 58 L78 50 L92 78 Z"
@@ -154,54 +138,57 @@ export function AnimatedLogo({
               d="M32 78 L45 52 L52 60 L60 38 L68 55 L75 48 L88 78 Z"
               className="fill-primary-foreground"
             />
-            {/* Snow caps */}
+            {/* Snow caps with shimmer */}
             <path
               d="M60 38 L55 48 L60 45 L65 48 Z"
-              className="fill-accent/80"
+              className="fill-accent"
+              style={{
+                animation: 'logo-shimmer 3s ease-in-out infinite',
+              }}
             />
             <path
               d="M75 48 L72 54 L75 52 L78 54 Z"
-              className="fill-accent/60"
+              className="fill-accent/70"
+              style={{
+                animation: 'logo-shimmer 3s ease-in-out infinite 0.5s',
+              }}
             />
           </g>
           
-          {/* North Star - 8 pointed */}
-          <g 
-            filter={active ? "url(#glow)" : "none"}
-            style={{
-              transform: `scale(${active ? 1.15 : 1})`,
-              transformOrigin: '60px 28px',
-              transition: 'transform 0.4s ease-out',
-            }}
-          >
-            {/* Main star points */}
+          {/* North Star - pulsing */}
+          <g filter="url(#starGlow)">
             <polygon
-              points="60,20 61.5,25 67,25 62.5,28.5 64.5,34 60,30.5 55.5,34 57.5,28.5 53,25 58.5,25"
+              points="60,18 62,24 68,24 63,28 65,35 60,30 55,35 57,28 52,24 58,24"
               fill="url(#goldGradient)"
+              style={{
+                animation: 'logo-star-pulse 2s ease-in-out infinite',
+                transformOrigin: '60px 26px',
+              }}
             />
-            {/* Small accent rays */}
-            <line x1="60" y1="18" x2="60" y2="15" className="stroke-accent" strokeWidth="1.5" strokeLinecap="round" />
-            <line x1="52" y1="22" x2="50" y2="20" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round" />
-            <line x1="68" y1="22" x2="70" y2="20" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round" />
+            {/* Star rays */}
+            <line x1="60" y1="16" x2="60" y2="12" className="stroke-accent" strokeWidth="1.5" strokeLinecap="round"
+              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite' }}
+            />
+            <line x1="51" y1="20" x2="48" y2="17" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round"
+              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite 0.3s' }}
+            />
+            <line x1="69" y1="20" x2="72" y2="17" className="stroke-accent/60" strokeWidth="1" strokeLinecap="round"
+              style={{ animation: 'logo-ray-pulse 2s ease-in-out infinite 0.6s' }}
+            />
           </g>
           
           {/* "AC" monogram */}
-          <g className="font-display" style={{ 
-            opacity: active ? 1 : 0.9,
-            transition: 'opacity 0.3s ease-out'
-          }}>
-            <text
-              x="60"
-              y="72"
-              textAnchor="middle"
-              className="fill-primary-foreground font-bold"
-              style={{ fontSize: '16px', fontFamily: 'var(--font-display), serif' }}
-            >
-              AC
-            </text>
-          </g>
+          <text
+            x="60"
+            y="72"
+            textAnchor="middle"
+            className="fill-primary-foreground font-bold"
+            style={{ fontSize: '14px', fontFamily: 'var(--font-display), serif' }}
+          >
+            AC
+          </text>
 
-          {/* Animated pulse ring */}
+          {/* Continuous pulse rings */}
           <circle
             cx="60"
             cy="60"
@@ -209,11 +196,9 @@ export function AnimatedLogo({
             className="fill-none stroke-accent/40"
             strokeWidth="1"
             style={{
-              animation: active ? 'logo-pulse 2s ease-out infinite' : 'none',
+              animation: 'logo-pulse-ring 3s ease-out infinite',
             }}
           />
-          
-          {/* Secondary pulse */}
           <circle
             cx="60"
             cy="60"
@@ -221,20 +206,19 @@ export function AnimatedLogo({
             className="fill-none stroke-accent/20"
             strokeWidth="0.5"
             style={{
-              animation: active ? 'logo-pulse 2s ease-out infinite 0.5s' : 'none',
+              animation: 'logo-pulse-ring 3s ease-out infinite 1.5s',
             }}
           />
         </svg>
         
-        {/* Glow effect behind logo */}
+        {/* Ambient glow - always on */}
         <div 
-          className={`absolute inset-0 rounded-full transition-opacity duration-500 -z-10 ${
-            active ? 'opacity-40' : 'opacity-0'
-          }`}
+          className="absolute inset-0 rounded-full -z-10"
           style={{
-            background: 'radial-gradient(circle, hsl(var(--accent) / 0.4) 0%, transparent 60%)',
-            filter: 'blur(12px)',
-            transform: 'scale(1.2)',
+            background: 'radial-gradient(circle, hsl(var(--accent) / 0.25) 0%, transparent 60%)',
+            filter: 'blur(10px)',
+            transform: 'scale(1.3)',
+            animation: 'logo-glow-pulse 4s ease-in-out infinite',
           }}
         />
       </div>
@@ -259,19 +243,47 @@ export function AnimatedLogo({
             </span>
           </h1>
           {!compact && (
-            <p className={`${sizeClasses[size].sub} mt-1.5 italic ${subtitleColorClass} flex items-center gap-2`}>
+            <p className={`${sizeClasses[size].sub} mt-1 sm:mt-1.5 italic ${subtitleColorClass} flex items-center gap-1 sm:gap-2 flex-wrap`}>
               <span className="font-serif">Alaska's Voice Since 2026</span>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              <span className="font-serif">Serving the Last Frontier</span>
+              <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-accent" style={{ animation: 'logo-dot-pulse 2s ease-in-out infinite' }} />
+              <span className="font-serif hidden sm:inline">Serving the Last Frontier</span>
             </p>
           )}
         </div>
       )}
 
       <style>{`
-        @keyframes logo-pulse {
-          0% { r: 52; opacity: 0.6; stroke-width: 2; }
-          100% { r: 58; opacity: 0; stroke-width: 0.5; }
+        @keyframes logo-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes logo-spin-reverse {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        @keyframes logo-pulse-ring {
+          0% { r: 52; opacity: 0.5; stroke-width: 1.5; }
+          100% { r: 60; opacity: 0; stroke-width: 0.5; }
+        }
+        @keyframes logo-star-pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.15); opacity: 0.9; }
+        }
+        @keyframes logo-ray-pulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+        @keyframes logo-shimmer {
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
+        }
+        @keyframes logo-glow-pulse {
+          0%, 100% { opacity: 0.3; transform: scale(1.3); }
+          50% { opacity: 0.5; transform: scale(1.4); }
+        }
+        @keyframes logo-dot-pulse {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
         }
       `}</style>
     </div>
