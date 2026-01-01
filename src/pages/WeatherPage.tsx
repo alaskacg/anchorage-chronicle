@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
@@ -9,6 +9,7 @@ import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { BreakingNewsTicker } from '@/components/BreakingNewsTicker';
 import { AlertBanner } from '@/components/AlertBanner';
+import { AlaskaWeatherMap } from '@/components/AlaskaWeatherMap';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -65,42 +66,40 @@ const alaskaLocations = [
   { name: 'Valdez', lat: 61.1309, lng: -146.3483 },
 ];
 
-const radarOptions = [
-  { id: 'precipitation', label: 'Precipitation', icon: CloudRain },
-  { id: 'snow', label: 'Snow Depth', icon: Snowflake },
-  { id: 'temperature', label: 'Temperature', icon: Thermometer },
-  { id: 'wind', label: 'Wind Speed', icon: Wind },
-  { id: 'visibility', label: 'Visibility', icon: Eye },
-  { id: 'satellite', label: 'Satellite', icon: Cloud },
-];
-
-const WeatherIcon = ({ condition, className = 'h-8 w-8' }: { condition?: string | null; className?: string }) => {
-  const iconClass = className;
-  switch (condition?.toLowerCase()) {
-    case 'sunny':
-    case 'clear':
-      return <Sun className={`${iconClass} text-accent`} />;
-    case 'rain':
-    case 'rainy':
-      return <CloudRain className={`${iconClass} text-secondary`} />;
-    case 'snow':
-    case 'snowy':
-      return <Snowflake className={`${iconClass} text-blue-300`} />;
-    case 'partly cloudy':
-      return <Cloud className={`${iconClass} text-muted-foreground`} />;
-    case 'cloudy':
-      return <Cloud className={`${iconClass} text-muted-foreground`} />;
-    case 'thunderstorm':
-      return <CloudLightning className={`${iconClass} text-yellow-500`} />;
-    default:
-      return <Cloud className={`${iconClass} text-muted-foreground`} />;
+// WeatherIcon with forwardRef to fix ref warning
+const WeatherIcon = forwardRef<HTMLDivElement, { condition?: string | null; className?: string }>(
+  ({ condition, className = 'h-8 w-8' }, ref) => {
+    const iconClass = className;
+    const Icon = (() => {
+      switch (condition?.toLowerCase()) {
+        case 'sunny':
+        case 'clear':
+          return <Sun className={`${iconClass} text-accent`} />;
+        case 'rain':
+        case 'rainy':
+          return <CloudRain className={`${iconClass} text-secondary`} />;
+        case 'snow':
+        case 'snowy':
+          return <Snowflake className={`${iconClass} text-blue-300`} />;
+        case 'partly cloudy':
+          return <Cloud className={`${iconClass} text-muted-foreground`} />;
+        case 'cloudy':
+          return <Cloud className={`${iconClass} text-muted-foreground`} />;
+        case 'thunderstorm':
+          return <CloudLightning className={`${iconClass} text-yellow-500`} />;
+        default:
+          return <Cloud className={`${iconClass} text-muted-foreground`} />;
+      }
+    })();
+    
+    return <div ref={ref} className="inline-flex">{Icon}</div>;
   }
-};
+);
+WeatherIcon.displayName = 'WeatherIcon';
 
 const WeatherPage = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [selectedLocation, setSelectedLocation] = useState('Anchorage');
-  const [selectedRadar, setSelectedRadar] = useState('precipitation');
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
   // Current time for Alaska
@@ -302,13 +301,13 @@ const WeatherPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Interactive Radar Map */}
+              {/* Interactive Alaska Weather Map */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between flex-wrap gap-4">
                     <CardTitle className="font-display flex items-center gap-2">
                       <Navigation className="h-5 w-5 text-accent" />
-                      Alaska Weather Radar
+                      Alaska Interactive Weather Map
                     </CardTitle>
                     <div className="text-sm text-muted-foreground">
                       <Clock className="h-4 w-4 inline mr-1" />
@@ -316,56 +315,13 @@ const WeatherPage = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  {/* Radar Type Selector */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {radarOptions.map((option) => (
-                      <Button
-                        key={option.id}
-                        variant={selectedRadar === option.id ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setSelectedRadar(option.id)}
-                        className="flex items-center gap-2"
-                      >
-                        <option.icon className="h-4 w-4" />
-                        {option.label}
-                      </Button>
-                    ))}
-                  </div>
-
-                  {/* Radar Map Placeholder - Using NOAA/NWS embeds */}
-                  <div className="relative bg-muted rounded-lg overflow-hidden" style={{ height: '500px' }}>
-                    <iframe
-                      src="https://radar.weather.gov/ridge/standard/PACG_loop.gif"
-                      title="Alaska Weather Radar"
-                      className="absolute inset-0 w-full h-full border-0"
-                      style={{ 
-                        filter: selectedRadar === 'temperature' ? 'hue-rotate(180deg)' : 'none',
-                        background: 'linear-gradient(180deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1))'
-                      }}
-                    />
-                    {/* Fallback overlay with Alaska map */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-primary/5 pointer-events-none">
-                      <div className="text-center">
-                        <Cloud className="h-16 w-16 text-muted-foreground mx-auto mb-4 animate-pulse" />
-                        <p className="text-muted-foreground font-sans text-sm">
-                          Loading {radarOptions.find(r => r.id === selectedRadar)?.label} radar...
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Data from National Weather Service Alaska Region
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Map Controls */}
-                  <div className="mt-4 flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-4">
-                      <span className="text-muted-foreground">Zoom:</span>
-                      <Button variant="outline" size="sm">State</Button>
-                      <Button variant="outline" size="sm">Regional</Button>
-                      <Button variant="outline" size="sm">Local</Button>
-                    </div>
+                <CardContent className="p-0">
+                  <AlaskaWeatherMap 
+                    selectedLocation={selectedLocation}
+                    onLocationSelect={setSelectedLocation}
+                  />
+                  <div className="p-4 border-t border-border flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Click any city marker for weather details</span>
                     <a 
                       href="https://www.weather.gov/afc/" 
                       target="_blank" 
