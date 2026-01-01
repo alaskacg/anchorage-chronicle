@@ -287,10 +287,10 @@ const SectionPage = () => {
                       to={`/article/${article.slug}`}
                       className="flex items-start gap-3 group"
                     >
-                      <span className="font-display text-2xl font-bold text-accent/50 group-hover:text-accent transition-colors">
+                      <span className="font-display text-2xl font-bold text-accent/50 transition-opacity group-hover:opacity-90">
                         {index + 1}
                       </span>
-                      <span className="font-sans text-sm text-foreground group-hover:text-accent transition-colors line-clamp-2">
+                      <span className="font-sans text-sm text-foreground transition-opacity group-hover:opacity-90 line-clamp-2">
                         {article.title}
                       </span>
                     </Link>

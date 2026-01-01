@@ -87,7 +87,7 @@ export function ArticleCard({
                 {categoryName}
               </Link>
             )}
-            <h3 className="font-display text-xl font-bold text-foreground leading-tight mb-2 group-hover:text-accent transition-colors">
+            <h3 className="font-display text-xl font-bold text-foreground leading-tight mb-2 transition-opacity group-hover:opacity-90">
               {title}
             </h3>
             {excerpt && (
@@ -134,7 +134,7 @@ export function ArticleCard({
                 {categoryName}
               </span>
             )}
-            <h4 className="font-display text-sm font-bold text-foreground leading-tight group-hover:text-accent transition-colors line-clamp-2">
+            <h4 className="font-display text-sm font-bold text-foreground leading-tight transition-opacity group-hover:opacity-90 line-clamp-2">
               {title}
             </h4>
             {timeAgo && (
@@ -157,7 +157,7 @@ export function ArticleCard({
             {categoryName}
           </span>
         )}
-        <h3 className="font-display text-lg font-bold text-foreground leading-tight mb-2 group-hover:text-accent transition-colors">
+        <h3 className="font-display text-lg font-bold text-foreground leading-tight mb-2 transition-opacity group-hover:opacity-90">
           {title}
         </h3>
         {excerpt && (

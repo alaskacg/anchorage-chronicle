@@ -14,7 +14,7 @@ export function SectionHeader({ title, href, showViewAll = true }: SectionHeader
       {showViewAll && href && (
         <Link
           to={href}
-          className="flex items-center gap-1 text-sm font-sans font-medium text-accent hover:text-accent/80 transition-colors"
+          className="flex items-center gap-1 text-sm font-sans font-medium text-accent transition-opacity hover:opacity-80"
         >
           View All
           <ChevronRight className="h-4 w-4" />

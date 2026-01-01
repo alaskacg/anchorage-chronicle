@@ -31,16 +31,17 @@ export function FeaturedArticle({
   const displayImage = imageUrl || heroImage;
 
   return (
-    <article className="relative overflow-hidden group">
-      <Link to={`/article/${slug}`}>
-        <div className="relative h-[400px] md:h-[500px] lg:h-[600px]">
+    <article className="relative overflow-hidden">
+      <Link to={`/article/${slug}`} className="block">
+        <div className="relative h-[280px] md:h-[360px] lg:h-[450px]">
           <img
             src={displayImage}
             alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/40 to-transparent" />
-          
+          <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12">
             <div className="container mx-auto">
               {categoryName && (
