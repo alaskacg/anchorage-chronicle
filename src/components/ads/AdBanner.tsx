@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { ExternalLink, MapPin, Anchor, Mountain, Briefcase, ChevronRight, Star, Shield, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
 // Import background images
 import akListingsBg from '@/assets/ad-aklistings-bg.jpg';
 import consultingBg from '@/assets/ad-consulting-bg.jpg';
@@ -88,13 +87,12 @@ const ads: AdConfig[] = [
   },
 ];
 
-interface AdBannerProps {
+interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'large' | 'medium' | 'small' | 'sidebar';
   adId?: string;
-  className?: string;
 }
 
-export function AdBanner({ variant = 'large', adId, className }: AdBannerProps) {
+export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(({ variant = 'large', adId, className, ...props }, ref) => {
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -147,7 +145,9 @@ export function AdBanner({ variant = 'large', adId, className }: AdBannerProps) 
       className={className}
     />
   );
-}
+});
+
+AdBanner.displayName = 'AdBanner';
 
 // Large Hero-style Ad
 function LargeAd({ 
@@ -446,7 +446,7 @@ export function AdCarousel({ className }: { className?: string }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % ads.length);
-    }, 6000);
+    }, 12000); // Slowed down to 12 seconds per ad
     return () => clearInterval(interval);
   }, []);
 
