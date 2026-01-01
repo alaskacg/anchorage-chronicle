@@ -45,7 +45,7 @@ export function AnimatedLogo({
         <img
           src={logoIcon}
           alt="The Anchorage Chronicle logo"
-          className={`${sizeClasses[size]} w-auto relative z-10`}
+          className={`${sizeClasses[size]} w-auto relative z-10 motion-safe:animate-[pulse_6s_ease-in-out_infinite]`}
           style={{
             filter: 'none',
           }}
