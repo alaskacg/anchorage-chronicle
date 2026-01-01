@@ -27,7 +27,7 @@ export function SectionHero({ title, description, imageUrl, breadcrumbs }: Secti
           {/* Breadcrumbs */}
           {breadcrumbs && (
             <nav className="flex items-center gap-2 text-sm text-primary-foreground/80 mb-4">
-              <Link to="/" className="flex items-center gap-1 hover:text-accent transition-colors">
+              <Link to="/" className="flex items-center gap-1 transition-opacity hover:opacity-80">
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </Link>
@@ -37,7 +37,7 @@ export function SectionHero({ title, description, imageUrl, breadcrumbs }: Secti
                   {index === breadcrumbs.length - 1 ? (
                     <span className="text-accent font-medium">{crumb.label}</span>
                   ) : (
-                    <Link to={crumb.href} className="hover:text-accent transition-colors">
+                    <Link to={crumb.href} className="transition-opacity hover:opacity-80">
                       {crumb.label}
                     </Link>
                   )}

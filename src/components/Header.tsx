@@ -68,18 +68,16 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy', c
 
       {/* Masthead */}
       <div className="container mx-auto px-4">
-        <div className={"relative text-center border-b border-border " + (compact ? "py-3" : "py-6")}>
-          {/* Lower-left masthead logo (always visible) */}
-          <Link
-            to="/"
-            className="absolute left-0 bottom-2 inline-flex items-center"
-            aria-label="Home"
-          >
-            <AnimatedLogo size="sm" showText={false} variant="dark" />
-          </Link>
-
-          <Link to="/" className="inline-block">
-            <AnimatedLogo size={compact ? 'md' : 'lg'} showText={true} variant="dark" />
+        <div className={"relative border-b border-border " + (compact ? "py-2" : "py-5")}
+          aria-label="Site masthead"
+        >
+          <Link to="/" className="inline-flex w-full justify-center" aria-label="Home">
+            <AnimatedLogo
+              size={compact ? 'md' : 'lg'}
+              showText={true}
+              variant="light"
+              compact={compact}
+            />
           </Link>
         </div>
       </div>
