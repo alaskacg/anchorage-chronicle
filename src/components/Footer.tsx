@@ -105,8 +105,11 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-accent" />
-                <a href="mailto:news@anchoragechronicle.com" className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors">
-                  news@anchoragechronicle.com
+                <a
+                  href="mailto:newsteam@anchoragechronicle.com"
+                  className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors"
+                >
+                  newsteam@anchoragechronicle.com
                 </a>
               </li>
             </ul>

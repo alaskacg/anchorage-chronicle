@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import logoIcon from '@/assets/logo-icon.png';
 
 interface AnimatedLogoProps {
@@ -8,12 +7,6 @@ interface AnimatedLogoProps {
 }
 
 export function AnimatedLogo({ size = 'md', showText = true, variant = 'dark' }: AnimatedLogoProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const sizeClasses = {
     sm: 'h-8',
     md: 'h-12',
@@ -41,23 +34,19 @@ export function AnimatedLogo({ size = 'md', showText = true, variant = 'dark' }:
       <div className="relative">
         <img
           src={logoIcon}
-          alt="The Anchorage Chronicle"
-          className={`${sizeClasses[size]} w-auto relative z-10 transition-opacity duration-300 ${
-            mounted ? 'opacity-100' : 'opacity-0'
-          }`}
+          alt="The Anchorage Chronicle logo"
+          className={`${sizeClasses[size]} w-auto relative z-10`}
           style={{
             filter: variant === 'light' ? 'brightness(0) invert(1)' : 'none',
           }}
+          loading="eager"
+          decoding="async"
         />
       </div>
 
       {/* Text */}
       {showText && (
-        <div
-          className={`transition-opacity duration-300 ${
-            mounted ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
+        <div>
           <h1
             className={`font-display ${textSizes[size]} font-bold tracking-tight ${
               variant === 'light' ? 'text-primary-foreground' : 'text-primary'
