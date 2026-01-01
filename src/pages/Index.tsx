@@ -11,7 +11,6 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import heroImage from '@/assets/hero-denali.jpg';
-import auroraImage from '@/assets/aurora-alaska.jpg';
 import capitolImage from '@/assets/capitol-juneau.jpg';
 import iditarodImage from '@/assets/iditarod-race.jpg';
 
@@ -26,8 +25,9 @@ interface Article {
   categories: { name: string; slug: string } | null;
 }
 
+const BLOCKED_SLUGS = new Set(['northern-lights-spectacular-expected']);
+
 const articleImages: Record<string, string> = {
-  'northern-lights-spectacular-expected': auroraImage,
   'legislature-convenes-new-session': capitolImage,
   'iditarod-mushers-prepare-2026': iditarodImage,
 };
@@ -49,7 +49,7 @@ const Index = () => {
         .limit(1)
         .single();
 
-      if (featured) {
+      if (featured && !BLOCKED_SLUGS.has(featured.slug)) {
         setFeaturedArticle(featured);
       }
 
@@ -62,7 +62,10 @@ const Index = () => {
         .limit(6);
 
       if (latest) {
-        setLatestArticles(latest.filter(a => a.id !== featured?.id));
+        const cleaned = latest
+          .filter((a) => !BLOCKED_SLUGS.has(a.slug))
+          .filter((a) => a.id !== featured?.id);
+        setLatestArticles(cleaned);
       }
 
       setLoading(false);
