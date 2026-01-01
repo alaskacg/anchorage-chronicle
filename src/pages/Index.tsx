@@ -8,6 +8,7 @@ import { WeatherWidget } from '@/components/WeatherWidget';
 import { FeaturedArticle } from '@/components/FeaturedArticle';
 import { ArticleCard } from '@/components/ArticleCard';
 import { SectionHeader } from '@/components/SectionHeader';
+import { AdBanner } from '@/components/ads/AdBanner';
 import heroImage from '@/assets/hero-denali.jpg';
 import auroraImage from '@/assets/aurora-alaska.jpg';
 import capitolImage from '@/assets/capitol-juneau.jpg';
@@ -127,6 +128,11 @@ const Index = () => {
                 </div>
               )}
 
+              {/* Ad Banner - Rotating Large */}
+              <div className="my-8">
+                <AdBanner variant="large" />
+              </div>
+
               {/* Decorative Divider */}
               <div className="newspaper-divider" />
 
@@ -154,6 +160,9 @@ const Index = () => {
             <aside className="space-y-6">
               <WeatherWidget />
 
+              {/* Sidebar Ad - Alaska Consulting Group */}
+              <AdBanner variant="sidebar" adId="consulting" />
+
               {/* Quick Links */}
               <div className="bg-card border border-border p-5">
                 <h3 className="font-display text-lg font-bold text-primary mb-4">Sections</h3>
@@ -170,6 +179,9 @@ const Index = () => {
                 </div>
               </div>
 
+              {/* Sidebar Ad - Alaskan Boats */}
+              <AdBanner variant="sidebar" adId="boats" />
+
               {/* Newsletter Signup */}
               <div className="bg-primary text-primary-foreground p-5">
                 <h3 className="font-display text-lg font-bold mb-2">Stay Informed</h3>
@@ -185,6 +197,9 @@ const Index = () => {
                   Subscribe
                 </button>
               </div>
+
+              {/* Sidebar Ad - Alaska Mining */}
+              <AdBanner variant="sidebar" adId="mining" />
             </aside>
           </div>
         </div>
