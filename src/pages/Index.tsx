@@ -9,6 +9,7 @@ import { FeaturedArticle } from '@/components/FeaturedArticle';
 import { ArticleCard } from '@/components/ArticleCard';
 import { SectionHeader } from '@/components/SectionHeader';
 import { AdBanner } from '@/components/ads/AdBanner';
+import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import heroImage from '@/assets/hero-denali.jpg';
 import auroraImage from '@/assets/aurora-alaska.jpg';
 import capitolImage from '@/assets/capitol-juneau.jpg';
@@ -179,8 +180,11 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Sidebar Ad - Alaskan Boats */}
-              <AdBanner variant="sidebar" adId="boats" />
+              {/* One quote per page */}
+              <RandomAlaskaQuote variant="sidebar" />
+
+              {/* Sidebar Ad - Alaska Mining */}
+              <AdBanner variant="sidebar" adId="mining" />
 
               {/* Newsletter Signup */}
               <div className="bg-primary text-primary-foreground p-5">
