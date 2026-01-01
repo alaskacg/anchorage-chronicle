@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
-import logoIcon from '@/assets/logo-icon.png';
+import { AnimatedLogo } from '@/components/AnimatedLogo';
 
 const sections = [
   { label: 'Local News', href: '/section/local' },
@@ -9,8 +9,8 @@ const sections = [
   { label: 'Business', href: '/section/business' },
   { label: 'Sports', href: '/section/sports' },
   { label: 'Outdoors', href: '/section/outdoors' },
+  { label: 'Weather', href: '/weather' },
   { label: 'Community', href: '/section/community' },
-  { label: 'Opinion', href: '/section/opinion' },
 ];
 
 const about = [
@@ -32,9 +32,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src={logoIcon} alt="The Anchorage Chronicle" className="h-12 w-auto brightness-0 invert" />
-              <span className="font-display text-xl font-bold">The Anchorage Chronicle</span>
+            <Link to="/" className="inline-block mb-4">
+              <AnimatedLogo size="sm" showText={true} variant="light" />
             </Link>
             <p className="font-serif text-sm text-primary-foreground/80 mb-4">
               Serving Alaska with trusted journalism since 2026. Your source for local, state, and community news.
