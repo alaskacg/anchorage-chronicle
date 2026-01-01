@@ -2,18 +2,17 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { BreakingNewsTicker } from '@/components/BreakingNewsTicker';
-import { AlertBanner } from '@/components/AlertBanner';
 import { WeatherInlay } from '@/components/WeatherInlay';
 import { CompactFeaturedArticle } from '@/components/CompactFeaturedArticle';
 import { ArticleCard } from '@/components/ArticleCard';
 import { NewsSectionFrame } from '@/components/NewsSectionFrame';
 import { AnimatedNewsColumn, StaggeredColumnGrid } from '@/components/AnimatedNewsColumn';
 import { QuickHeadlines } from '@/components/QuickHeadlines';
+import { InlineBreakingNews } from '@/components/InlineBreakingNews';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { Newspaper, MapPin, Building2, Mountain, TrendingUp } from 'lucide-react';
-import heroImage from '@/assets/hero-denali.jpg';
+import featuredImage from '@/assets/featured-anchorage-launch.jpg';
 
 interface Article {
   id: string;
@@ -27,7 +26,7 @@ interface Article {
 }
 
 const articleImages: Record<string, string> = {
-  'alaska-news-corporation-launches-anchorage-chronicle': heroImage,
+  'alaska-news-corporation-launches-anchorage-chronicle': featuredImage,
 };
 
 const Index = () => {
@@ -72,8 +71,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <AlertBanner />
-      <BreakingNewsTicker />
       <Header compact />
 
       <main className="flex-1">
@@ -84,7 +81,7 @@ const Index = () => {
               slug={featuredArticle.slug}
               title={featuredArticle.title}
               excerpt={featuredArticle.excerpt}
-              imageUrl={articleImages[featuredArticle.slug] || featuredArticle.image_url || heroImage}
+              imageUrl={articleImages[featuredArticle.slug] || featuredArticle.image_url || featuredImage}
               authorName={featuredArticle.author_name}
               publishedAt={featuredArticle.published_at}
               categoryName={featuredArticle.categories?.name}
@@ -114,6 +111,9 @@ const Index = () => {
                   variant="featured"
                   href="/section/local"
                 >
+                  {/* Breaking News Ticker inside Top Stories */}
+                  <InlineBreakingNews />
+                  
                   {loading ? (
                     <div className="p-4 space-y-3 animate-pulse">
                       {[1, 2, 3].map(i => (

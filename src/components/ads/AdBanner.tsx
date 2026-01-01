@@ -30,7 +30,7 @@ const ads: AdConfig[] = [
     features: ['13+ Specialized Sites', '8 Major Regions', 'Verified Sellers Only'],
     url: 'https://aklistings.com',
     bgImage: akListingsBg,
-    accentColor: 'from-teal-500/90 to-emerald-600/90',
+    accentColor: 'from-slate-800/95 to-slate-900/95',
     icon: <MapPin className="h-8 w-8" />,
     stats: [
       { label: 'Regions', value: '8+' },
@@ -396,11 +396,12 @@ function SidebarAd({ ad, isVisible }: { ad: AdConfig; isVisible: boolean }) {
       <div className="p-4">
         <div className="flex items-center gap-2 mb-2">
           <div className={cn(
-            "p-1.5 rounded bg-gradient-to-br text-white",
-            ad.id === 'aklistings' && "from-teal-500 to-emerald-600",
-            ad.id === 'consulting' && "from-primary to-slate-700",
-            ad.id === 'boats' && "from-sky-500 to-blue-700",
-            ad.id === 'mining' && "from-amber-500 to-yellow-600"
+            "p-1.5 rounded text-white",
+            ad.id === 'aklistings' && "bg-slate-800",
+            ad.id === 'akguidesearch' && "bg-secondary",
+            ad.id === 'consulting' && "bg-primary",
+            ad.id === 'boats' && "bg-sky-700",
+            ad.id === 'mining' && "bg-amber-700"
           )}>
             {ad.icon}
           </div>

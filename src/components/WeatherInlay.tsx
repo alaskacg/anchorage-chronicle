@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Cloud, Sun, CloudRain, Snowflake, Wind, Droplets, Thermometer, Eye, Sunrise, Sunset, MapPin, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Snowflake, Wind, Droplets, Thermometer, Eye, Sunrise, Sunset, MapPin, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { WeatherAlertTicker } from './WeatherAlertTicker';
 
 interface WeatherData {
   location: string;
@@ -196,13 +197,8 @@ export function WeatherInlay() {
           </div>
         </div>
 
-        {/* Advisory Banner (conditional) */}
-        {weather.wind_mph && weather.wind_mph > 15 && (
-          <div className="bg-accent/20 px-4 py-2 flex items-center gap-2 text-xs font-sans text-accent animate-pulse-alert">
-            <AlertTriangle className="h-4 w-4" />
-            <span>Wind Advisory: Gusts up to {weather.wind_mph + 10} mph expected</span>
-          </div>
-        )}
+        {/* Weather Alert Ticker */}
+        <WeatherAlertTicker />
 
         {/* Footer Link */}
         <Link 
