@@ -85,6 +85,22 @@ const ads: AdConfig[] = [
       { label: 'Equipment', value: '200+' },
     ],
   },
+  {
+    id: 'akguidesearch',
+    name: 'Alaska Guide Search',
+    slogan: 'Find Your Perfect Alaska Guide',
+    description: 'Connect with experienced Alaska guides for fishing, hunting, wildlife viewing, and wilderness adventures across the Last Frontier.',
+    features: ['Fishing Guides', 'Hunting Outfitters', 'Wildlife Tours'],
+    url: 'https://akguidesearch.com',
+    bgImage: consultingBg,
+    accentColor: 'from-secondary/90 to-emerald-800/90',
+    icon: <MapPin className="h-8 w-8" />,
+    stats: [
+      { label: 'Guides', value: '500+' },
+      { label: 'Regions', value: 'All AK' },
+      { label: 'Adventures', value: '50+' },
+    ],
+  },
 ];
 
 interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -93,31 +109,11 @@ interface AdBannerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(({ variant = 'large', adId, className, ...props }, ref) => {
-  const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // If specific ad requested, find it
-  const ad = adId 
-    ? ads.find(a => a.id === adId) || ads[0]
-    : ads[currentAdIndex];
-
-  // Rotate ads if no specific ad requested
-  useEffect(() => {
-    if (adId) return;
-    
-    const interval = setInterval(() => {
-      if (!isHovered) {
-        setIsVisible(false);
-        setTimeout(() => {
-          setCurrentAdIndex((prev) => (prev + 1) % ads.length);
-          setIsVisible(true);
-        }, 300);
-      }
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [adId, isHovered]);
+  // Always use the requested adId or default to the first ad (no rotation)
+  const ad = adId ? ads.find(a => a.id === adId) || ads[0] : ads[0];
 
   // Initial visibility
   useEffect(() => {
@@ -197,9 +193,9 @@ function LargeAd({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:24px_24px] animate-pulse" />
       </div>
 
-      {/* Content */}
+      {/* Content - reduced padding by ~40% */}
       <div className={cn(
-        "relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-9 text-white",
+        "relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 p-4 md:p-5 text-white",
         "transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}>

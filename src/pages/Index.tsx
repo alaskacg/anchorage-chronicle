@@ -132,9 +132,9 @@ const Index = () => {
                 </div>
               )}
 
-              {/* Ad Banner - Rotating Large */}
+              {/* Primary Ad - Alaska Listings */}
               <div className="my-8">
-                <AdBanner variant="large" />
+                <AdBanner variant="large" adId="aklistings" />
               </div>
 
               {/* Decorative Divider */}
@@ -164,8 +164,8 @@ const Index = () => {
             <aside className="space-y-6">
               <WeatherWidget />
 
-              {/* Sidebar Ad - Alaska Consulting Group */}
-              <AdBanner variant="sidebar" adId="consulting" />
+              {/* Sidebar Ad - Alaska Guide Search */}
+              <AdBanner variant="sidebar" adId="akguidesearch" />
 
               {/* Quick Links */}
               <div className="bg-card border border-border p-5">
@@ -186,8 +186,8 @@ const Index = () => {
               {/* One quote per page */}
               <RandomAlaskaQuote variant="sidebar" />
 
-              {/* Sidebar Ad - Alaska Mining */}
-              <AdBanner variant="sidebar" adId="mining" />
+              {/* Sidebar Ad - Alaska Boats */}
+              <AdBanner variant="sidebar" adId="boats" />
 
               {/* Newsletter Signup */}
               <div className="bg-primary text-primary-foreground p-5">
@@ -205,8 +205,8 @@ const Index = () => {
                 </button>
               </div>
 
-              {/* Sidebar Ad - Alaska Mining */}
-              <AdBanner variant="sidebar" adId="mining" />
+              {/* Sidebar Ad - Alaska Consulting */}
+              <AdBanner variant="sidebar" adId="consulting" />
             </aside>
           </div>
         </div>

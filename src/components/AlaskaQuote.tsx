@@ -7,12 +7,10 @@ interface AlaskaQuoteProps {
   variant?: 'default' | 'featured' | 'sidebar';
 }
 
-// Extensive collection of Alaska quotes, sayings, and proverbs
-// Priority given to quotes by Alaskans and those who lived in Alaska
+// Curated collection of meaningful Alaska quotes - removed silly/humorous entries
 const alaskaQuotes = [
   // Historical Alaskans & Pioneers
   { quote: "Alaska is what happens when God's having a good day.", author: "Sydney Laurence, Alaskan Painter" },
-  { quote: "There are no rules in a knife fight, and there's no spring in Alaska.", author: "Ruben Gaines, Voice of Alaska" },
   { quote: "In Alaska, we measure distance in time, not miles.", author: "Fairbanks Pioneer Saying" },
   { quote: "The cold doesn't build character—it reveals it.", author: "Fairbanks Sourdough Proverb" },
   { quote: "Alaska is a land that teaches you to be humble every single day.", author: "Walter Harper, First to Summit Denali" },
@@ -25,34 +23,26 @@ const alaskaQuotes = [
   { quote: "We are the land and the land is us.", author: "Yup'ik Elder Teaching" },
   { quote: "Listen to the wind, it talks. Listen to the silence, it speaks.", author: "Inupiat Wisdom" },
   { quote: "A canoe doesn't know its master until the rapids.", author: "Athabascan Proverb" },
-  { quote: "The best time to plant a tree is twenty years ago. The second best time is now.", author: "Alutiiq Elder" },
   { quote: "Walk softly on the earth—she is your grandmother.", author: "Haida Proverb" },
   { quote: "When you drink from the stream, remember the spring.", author: "Tsimshian Teaching" },
-  { quote: "The whale does not thank you for the harpoon, but it feeds your village.", author: "Inupiat Whaling Wisdom" },
   { quote: "To know the trail ahead, ask those returning.", author: "Dena'ina Proverb" },
   { quote: "Even the smallest river carves the deepest canyon.", author: "Eyak Saying" },
   
   // Bush Pilots & Aviators
   { quote: "There are old pilots and bold pilots, but no old, bold pilots in Alaska.", author: "Don Sheldon, Talkeetna Bush Pilot" },
-  { quote: "In Alaska, every landing you walk away from is a good one.", author: "Wien Air Alaska Saying" },
-  { quote: "The weather here has only two settings: bad and worse.", author: "Juneau Bush Pilot" },
-  { quote: "Flying in Alaska isn't dangerous—landing is.", author: "Kodiak Aviation Proverb" },
   { quote: "Trust your instruments, but trust the mountain more.", author: "Denali Flight Service" },
   { quote: "A good pilot is always learning, especially from the ones who didn't make it.", author: "Bethel Bush Pilot" },
   
   // Fishermen & Mariners
   { quote: "The sea takes what she wants and gives what she pleases.", author: "Bristol Bay Fisherman" },
   { quote: "A boat in harbor is safe, but that's not what boats are for.", author: "Sitka Seiner Captain" },
-  { quote: "Count your salmon twice—once on the boat, once at the dock.", author: "Cordova Fishermen's Saying" },
   { quote: "The best captain is the one who knows when to stay ashore.", author: "Dutch Harbor Proverb" },
   { quote: "Respect the Bering Sea, or she'll teach you a lesson you won't live to remember.", author: "Crab Fleet Wisdom" },
-  { quote: "High tide lifts all boats, but low tide shows who's been working.", author: "Ketchikan Troller" },
   
   // Mushers & Dog Sledders
   { quote: "The dogs don't know it's a race. They just love to run.", author: "Susan Butcher, 4-Time Iditarod Champion" },
   { quote: "Every mile between Anchorage and Nome teaches you something about yourself.", author: "Joe Redington Sr., Father of the Iditarod" },
   { quote: "Out on the trail, your dogs become your family and your lifeline.", author: "DeeDee Jonrowe, Iditarod Legend" },
-  { quote: "Lead dog ain't much good if he don't know where he's going.", author: "Interior Alaska Mushing Proverb" },
   { quote: "When you're out there at forty below, there's only you, your dogs, and the aurora.", author: "Nome Finish Line Saying" },
   { quote: "The Iditarod doesn't build champions—it reveals them.", author: "Rick Swenson, 5-Time Champion" },
   { quote: "A tired dog team will still run for a good musher.", author: "Willow Kennel Wisdom" },
@@ -64,23 +54,6 @@ const alaskaQuotes = [
   { quote: "This land was alive long before us and will endure long after.", author: "Margaret Murie, Grandmother of Conservation" },
   { quote: "Alaska is not a place for the faint of heart. It's a place for those whose hearts beat for adventure.", author: "Libby Riddles, First Woman Iditarod Champion" },
   { quote: "You don't conquer Alaska—you learn to live with her on her terms.", author: "Anchorage Mountaineering Club" },
-  
-  // Weather & Seasons
-  { quote: "If you don't like the weather in Alaska, wait five minutes.", author: "Universal Alaskan Saying" },
-  { quote: "Winter in Alaska isn't a season—it's a lifestyle.", author: "Fairbanks Chamber of Commerce" },
-  { quote: "Breakup season: when everything that was frozen becomes mud.", author: "Anchorage Spring Proverb" },
-  { quote: "There are two seasons in Alaska: winter and construction.", author: "DOT Maintenance Worker" },
-  { quote: "The midnight sun doesn't let you sleep, and the polar night won't let you stay awake.", author: "Barrow Resident" },
-  { quote: "Alaska has summer too—it usually falls on a Wednesday.", author: "Valdez Local Humor" },
-  { quote: "When the thermometer breaks, that's when Alaska gets interesting.", author: "North Pole Resident" },
-  
-  // Wildlife & Nature
-  { quote: "In Alaska, you're never at the top of the food chain.", author: "Denali Park Ranger" },
-  { quote: "Bears don't read the signs that say 'No Bears Beyond This Point.'", author: "Katmai National Park Saying" },
-  { quote: "The moose has the right of way. Always.", author: "Alaska DMV" },
-  { quote: "When the aurora dances overhead, even the most skeptical hearts believe in magic.", author: "Fairbanks Aurora Watcher" },
-  { quote: "Eagles are just pigeons with better PR up here.", author: "Juneau Local" },
-  { quote: "Salmon don't run upstream because it's easy.", author: "Alaska Fishing Wisdom" },
   
   // Philosophy & Life
   { quote: "The Last Frontier isn't just a nickname—it's a way of life.", author: "Alaska State Tourism" },
@@ -96,17 +69,13 @@ const alaskaQuotes = [
   // Survival & Resilience
   { quote: "Adapt, improvise, overcome—or Alaska will overcome you.", author: "Alaska National Guard Motto" },
   { quote: "Plan for the worst, hope for the best, and always carry extra matches.", author: "Wilderness Survival Instructor" },
-  { quote: "In Alaska, 'stuck' is just another word for 'camping.'", author: "Four-Wheeler Proverb" },
   { quote: "The wilderness doesn't care about your schedule.", author: "Chugach Backcountry Guide" },
   { quote: "Prepare like you'll never be rescued, and you probably won't need to be.", author: "Alaska State Troopers" },
-  { quote: "Cotton kills. Wool saves. These are the rules.", author: "Outdoor Education Center" },
   
   // Community & Connection
   { quote: "In Alaska, your neighbor might be fifty miles away, but they'll be there in five minutes if you need them.", author: "Rural Alaska Saying" },
   { quote: "Small towns have long memories and big hearts.", author: "Seward Community Proverb" },
-  { quote: "The PFD doesn't make you Alaskan—the winters do.", author: "Longtime Resident Wisdom" },
   { quote: "Anyone can visit Alaska. It takes a special soul to stay.", author: "Glacier View Lodge" },
-  { quote: "We don't have road rage in Alaska—we have moose delay.", author: "Girdwood Commuter" },
   { quote: "Up here, helping a stranger isn't charity—it's survival.", author: "Alaska Highway Patrol" },
 ];
 
