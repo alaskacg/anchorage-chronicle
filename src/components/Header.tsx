@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, Cloud, Sun, CloudRain, Snowflake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logoIcon from '@/assets/logo-icon.png';
+import { AnimatedLogo } from '@/components/AnimatedLogo';
 
 const navItems = [
   { label: 'Local', href: '/section/local' },
@@ -12,7 +12,7 @@ const navItems = [
   { label: 'Sports', href: '/section/sports' },
   { label: 'Outdoors', href: '/section/outdoors' },
   { label: 'Community', href: '/section/community' },
-  { label: 'Opinion', href: '/section/opinion' },
+  { label: 'Weather', href: '/weather' },
 ];
 
 interface HeaderProps {
@@ -52,28 +52,18 @@ export function Header({ currentTemp = 28, weatherCondition = 'Partly Cloudy' }:
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
           <span className="font-sans">{dateString}</span>
-          <div className="flex items-center gap-2 font-sans">
+          <Link to="/weather" className="flex items-center gap-2 font-sans hover:text-accent transition-colors">
             <WeatherIcon condition={weatherCondition} />
             <span>Anchorage: {currentTemp}°F</span>
             <span className="hidden sm:inline">• {weatherCondition}</span>
-          </div>
+          </Link>
         </div>
       </div>
 
       {/* Masthead */}
       <div className="container mx-auto px-4 py-6 text-center border-b border-border">
         <Link to="/" className="inline-block">
-          <div className="flex items-center justify-center gap-4">
-            <img src={logoIcon} alt="The Anchorage Chronicle" className="h-16 w-auto" />
-            <div>
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight">
-                The Anchorage Chronicle
-              </h1>
-              <p className="text-muted-foreground font-serif text-sm md:text-base mt-1 italic">
-                Alaska's Voice Since 2026 • Serving the Last Frontier
-              </p>
-            </div>
-          </div>
+          <AnimatedLogo size="lg" showText={true} variant="dark" />
         </Link>
       </div>
 
