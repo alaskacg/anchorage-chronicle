@@ -199,7 +199,7 @@ function LargeAd({
 
       {/* Content */}
       <div className={cn(
-        "relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 p-8 md:p-12 text-white",
+        "relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-9 text-white",
         "transition-all duration-500",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}>

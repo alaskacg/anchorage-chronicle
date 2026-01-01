@@ -60,7 +60,7 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
                 <li key={item.href}>
                   <Link
                     to={item.href}
-                    className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors"
+                    className="font-sans text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
                   >
                     {item.label}
                   </Link>
@@ -77,7 +77,7 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
                 <li key={item.href}>
                   <Link
                     to={item.href}
-                    className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors"
+                    className="font-sans text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
                   >
                     {item.label}
                   </Link>
@@ -99,7 +99,10 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-accent" />
-                <a href="tel:+19075551234" className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors">
+                <a
+                  href="tel:+19075551234"
+                  className="font-sans text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
+                >
                   (907) 555-1234
                 </a>
               </li>
@@ -107,7 +110,7 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
                 <Mail className="h-4 w-4 shrink-0 text-accent" />
                 <a
                   href="mailto:newsteam@anchoragechronicle.com"
-                  className="font-sans text-sm text-primary-foreground/80 hover:text-accent transition-colors"
+                  className="font-sans text-sm text-primary-foreground/80 transition-opacity hover:opacity-90"
                 >
                   newsteam@anchoragechronicle.com
                 </a>
