@@ -9,7 +9,8 @@ import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { BreakingNewsTicker } from '@/components/BreakingNewsTicker';
 import { AlertBanner } from '@/components/AlertBanner';
-import { AlaskaWeatherMap } from '@/components/AlaskaWeatherMap';
+import { WeatherRadarMap } from '@/components/WeatherRadarMap';
+import { WeatherHistorySection } from '@/components/WeatherHistorySection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -316,7 +317,7 @@ const WeatherPage = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <AlaskaWeatherMap 
+                  <WeatherRadarMap 
                     selectedLocation={selectedLocation}
                     onLocationSelect={setSelectedLocation}
                   />
@@ -369,6 +370,9 @@ const WeatherPage = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Weather History Section */}
+              <WeatherHistorySection location={selectedLocation} />
 
               {/* Ad */}
               <AdBanner variant="large" />
