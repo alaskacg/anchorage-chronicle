@@ -190,6 +190,62 @@
     animation-play-state: paused;
   }
 
+  .ticker-section-animate {
+    animation: ticker-scroll 80s linear infinite;
+  }
+
+  .ticker-section-animate:hover {
+    animation-play-state: paused;
+  }
+
+  /* Ad animations */
+  .ad-entrance-large {
+    animation: ad-slide-up 0.8s ease-out forwards;
+  }
+  .ad-entrance-medium {
+    animation: ad-slide-up 0.6s ease-out forwards;
+  }
+  .ad-entrance-sidebar {
+    animation: ad-fade-scale 0.7s ease-out forwards;
+  }
+  @keyframes ad-slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ad-fade-scale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .ad-shimmer-sweep {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer-sweep 4s ease-in-out infinite;
+  }
+  @keyframes shimmer-sweep {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
+  .ad-icon-pulse {
+    animation: icon-pulse 3s ease-in-out infinite;
+  }
+  @keyframes icon-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 20px 5px rgba(255,255,255,0.15); }
+  }
+
+  .ad-particle {
+    @apply absolute w-1 h-1 rounded-full bg-white/20;
+  }
+  .ad-particle-1 { animation: particle-float 8s ease-in-out infinite; top: 20%; left: 10%; }
+  .ad-particle-2 { animation: particle-float 10s ease-in-out infinite 2s; top: 60%; left: 80%; }
+  .ad-particle-3 { animation: particle-float 12s ease-in-out infinite 4s; top: 40%; left: 50%; }
+  @keyframes particle-float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+    50% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
+  }
+
   /* Fade in animation */
   @keyframes fade-in-up {
     0% { opacity: 0; transform: translateY(20px); }
