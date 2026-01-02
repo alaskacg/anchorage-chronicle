@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BreakingNewsItem {
@@ -10,6 +10,7 @@ interface BreakingNewsItem {
 
 export function InlineBreakingNews() {
   const [newsItems, setNewsItems] = useState<BreakingNewsItem[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<string>('');
 
   useEffect(() => {
     const fetchBreakingNews = async () => {
@@ -17,15 +18,18 @@ export function InlineBreakingNews() {
         .from('breaking_news')
         .select('id, message, link')
         .eq('is_active', true)
-        .order('priority', { ascending: false });
+        .order('priority', { ascending: false })
+        .limit(5);
 
       if (!error && data) {
         setNewsItems(data);
+        setLastUpdate(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
       }
     };
 
     fetchBreakingNews();
 
+    // Subscribe to realtime updates
     const channel = supabase
       .channel('inline-breaking-news')
       .on(
@@ -41,38 +45,41 @@ export function InlineBreakingNews() {
       )
       .subscribe();
 
+    // Also refresh every 2 minutes
+    const interval = setInterval(fetchBreakingNews, 2 * 60 * 1000);
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(interval);
     };
   }, []);
 
   if (newsItems.length === 0) return null;
 
   return (
-    <div className="bg-destructive/10 border-b border-destructive/20 overflow-hidden">
-      <div className="flex items-center py-1.5 px-3">
-        <div className="flex items-center gap-1.5 pr-3 border-r border-destructive/30 shrink-0">
-          <AlertCircle className="h-3 w-3 text-destructive animate-pulse" />
-          <span className="font-sans font-bold text-xs uppercase tracking-wide text-destructive">
-            Breaking
-          </span>
-        </div>
-        <div className="overflow-hidden ml-3 flex-1">
-          <div className="ticker-animate-slow whitespace-nowrap inline-flex gap-12">
-            {[...newsItems, ...newsItems].map((item, index) => (
-              <span key={`${item.id}-${index}`} className="font-serif text-xs text-foreground">
-                {item.link ? (
-                  <a href={item.link} className="hover:underline hover:text-destructive transition-colors">
-                    {item.message}
-                  </a>
-                ) : (
-                  item.message
-                )}
-                <span className="mx-6 text-muted-foreground/50">◆</span>
-              </span>
-            ))}
+    <div className="border-b border-border bg-destructive/5">
+      <div className="flex items-center gap-2 px-4 py-2 border-b border-destructive/20">
+        <AlertCircle className="h-3.5 w-3.5 text-destructive animate-pulse" />
+        <span className="font-sans font-bold text-xs uppercase tracking-wide text-destructive">
+          Breaking News
+        </span>
+        <span className="text-[10px] text-muted-foreground flex items-center gap-1 ml-auto">
+          <RefreshCw className="h-2.5 w-2.5" />
+          Updated {lastUpdate}
+        </span>
+      </div>
+      <div className="divide-y divide-border">
+        {newsItems.map((item) => (
+          <div key={item.id} className="px-4 py-2.5 hover:bg-destructive/5 transition-colors">
+            {item.link ? (
+              <a href={item.link} className="text-sm font-serif text-foreground hover:text-destructive transition-colors">
+                {item.message}
+              </a>
+            ) : (
+              <span className="text-sm font-serif text-foreground">{item.message}</span>
+            )}
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -12,47 +12,50 @@ export function AnimatedLogo({
   compact = false,
 }: AnimatedLogoProps) {
   const sizeClasses = {
-    sm: { icon: 32, text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
-    md: { icon: 44, text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
-    lg: { icon: 64, text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
-    xl: { icon: 80, text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
+    sm: { height: 28, text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
+    md: { height: 36, text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
+    lg: { height: 48, text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
+    xl: { height: 56, text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
   };
 
-  const gapClass = compact ? 'gap-2 md:gap-3' : 'gap-3 sm:gap-4';
-  const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-primary';
-  const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/70' : 'text-muted-foreground';
-  const iconSize = sizeClasses[size].icon;
+  const gapClass = compact ? 'gap-2' : 'gap-3 sm:gap-4';
+  const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-foreground';
+  const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/60' : 'text-muted-foreground';
+  const height = sizeClasses[size].height;
 
   return (
-    <div className={`flex items-center ${gapClass} group`}>
-      {/* Simple, elegant monogram-style logo */}
-      <div 
-        className="relative shrink-0 flex items-center justify-center rounded-sm bg-primary transition-transform duration-300 group-hover:scale-105"
-        style={{ width: iconSize, height: iconSize }}
-      >
-        {/* The letter "A" in an elegant display font style */}
-        <span 
-          className="font-display font-bold text-primary-foreground leading-none select-none"
-          style={{ fontSize: iconSize * 0.6 }}
-        >
-          A
-        </span>
-        
-        {/* Subtle accent bar at bottom */}
+    <div className={`flex items-center ${gapClass}`}>
+      {/* Clean typographic wordmark with accent line */}
+      <div className="flex items-center gap-1">
+        {/* Accent vertical bar */}
         <div 
-          className="absolute bottom-0 left-0 right-0 bg-accent"
-          style={{ height: Math.max(2, iconSize * 0.04) }}
+          className="bg-accent rounded-sm"
+          style={{ width: Math.max(3, height * 0.08), height: height }}
         />
+        
+        {/* THE text */}
+        <span 
+          className={`font-display font-black uppercase tracking-tighter leading-none ${titleColorClass}`}
+          style={{ fontSize: height * 0.35 }}
+        >
+          THE
+        </span>
       </div>
 
-      {/* Text */}
+      {/* Main title */}
       {showText && (
-        <div className="min-w-0">
-          <h1 className={`font-display ${sizeClasses[size].text} font-bold tracking-tight leading-none ${titleColorClass}`}>
-            The Anchorage Chronicle
+        <div className="min-w-0 flex flex-col justify-center" style={{ height }}>
+          <h1 
+            className={`font-display font-bold tracking-tight leading-none ${titleColorClass}`}
+            style={{ fontSize: height * 0.55 }}
+          >
+            ANCHORAGE CHRONICLE
           </h1>
           {!compact && (
-            <p className={`${sizeClasses[size].sub} mt-1 ${subtitleColorClass} font-sans tracking-wide uppercase`}>
+            <p 
+              className={`${subtitleColorClass} font-sans tracking-widest uppercase mt-0.5`}
+              style={{ fontSize: height * 0.2 }}
+            >
               Alaska's Voice Since 2026
             </p>
           )}
