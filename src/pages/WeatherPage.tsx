@@ -549,28 +549,54 @@ const WeatherPage = () => {
             <aside className="space-y-6">
               {/* All Alaska Locations */}
               <Card>
-                <CardHeader>
+                <CardHeader className="pb-2">
                   <CardTitle className="font-display text-lg">Alaska Conditions</CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="divide-y divide-border">
-                    {alaskaLocations.map((loc) => (
-                      <button
-                        key={loc.name}
-                        onClick={() => setSelectedLocation(loc.name)}
-                        className={`w-full px-4 py-3 flex items-center justify-between hover:bg-muted/50 transition-colors text-left ${
-                          selectedLocation === loc.name ? 'bg-accent/10' : ''
-                        }`}
-                      >
-                        <span className="font-sans text-sm">{loc.name}</span>
-                        <div className="flex items-center gap-2">
-                          <Snowflake className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-display font-bold">
-                            {Math.floor(Math.random() * 30) - 10}°
-                          </span>
-                        </div>
-                      </button>
-                    ))}
+                    {alaskaLocations.map((loc) => {
+                      // Static weather data for each location
+                      const locationWeather: Record<string, { current: number; high: number; low: number }> = {
+                        'Anchorage': { current: 28, high: 32, low: 18 },
+                        'Fairbanks': { current: -15, high: -8, low: -28 },
+                        'Juneau': { current: 35, high: 38, low: 30 },
+                        'Barrow (Utqiaġvik)': { current: -22, high: -18, low: -32 },
+                        'Kodiak': { current: 38, high: 42, low: 32 },
+                        'Bethel': { current: 8, high: 14, low: -2 },
+                        'Nome': { current: -5, high: 2, low: -12 },
+                        'Ketchikan': { current: 40, high: 44, low: 35 },
+                        'Sitka': { current: 38, high: 42, low: 33 },
+                        'Valdez': { current: 30, high: 34, low: 24 },
+                      };
+                      const weather = locationWeather[loc.name] || { current: 20, high: 25, low: 15 };
+                      
+                      return (
+                        <button
+                          key={loc.name}
+                          onClick={() => setSelectedLocation(loc.name)}
+                          className={`w-full px-4 py-3 hover:bg-muted/50 transition-colors text-left ${
+                            selectedLocation === loc.name ? 'bg-accent/10 border-l-2 border-accent' : ''
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-sans text-sm font-medium">{loc.name}</span>
+                            <span className="font-display text-lg font-bold">
+                              {weather.current}°
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-end gap-3 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <TrendingUp className="h-3 w-3 text-destructive" />
+                              H: {weather.high}°
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <TrendingDown className="h-3 w-3 text-secondary" />
+                              L: {weather.low}°
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
