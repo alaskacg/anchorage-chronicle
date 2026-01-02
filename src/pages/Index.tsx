@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { WeatherInlay } from '@/components/WeatherInlay';
 import { TideChart } from '@/components/TideChart';
+import { WindyMapEmbed } from '@/components/WindyMapEmbed';
 import { CompactFeaturedArticle } from '@/components/CompactFeaturedArticle';
 import { ArticleCard } from '@/components/ArticleCard';
 import { NewsSectionFrame } from '@/components/NewsSectionFrame';
@@ -98,10 +99,13 @@ const Index = () => {
           
           {/* Top Row: Weather + Quick Headlines */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-            {/* Weather Inlay + Tide Chart */}
+            {/* Weather Inlay + Windy Map + Tide Chart */}
             <div className="lg:col-span-5 space-y-4">
               <AnimatedNewsColumn delay={100}>
                 <WeatherInlay />
+              </AnimatedNewsColumn>
+              <AnimatedNewsColumn delay={125}>
+                <WindyMapEmbed compact height="200px" className="shadow-sm" />
               </AnimatedNewsColumn>
               <AnimatedNewsColumn delay={150}>
                 <TideChart />
