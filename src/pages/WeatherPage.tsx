@@ -9,7 +9,7 @@ import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { AdBanner } from '@/components/ads/AdBanner';
 import { BreakingNewsTicker } from '@/components/BreakingNewsTicker';
 import { AlertBanner } from '@/components/AlertBanner';
-import { WeatherRadarMap } from '@/components/WeatherRadarMap';
+import { WindyMapEmbed } from '@/components/WindyMapEmbed';
 import { WeatherHistorySection } from '@/components/WeatherHistorySection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -317,12 +317,9 @@ const WeatherPage = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <WeatherRadarMap 
-                    selectedLocation={selectedLocation}
-                    onLocationSelect={setSelectedLocation}
-                  />
+                  <WindyMapEmbed height="450px" />
                   <div className="p-4 border-t border-border flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Click any city marker for weather details</span>
+                    <span className="text-muted-foreground">Live radar data from Windy.com</span>
                     <a 
                       href="https://www.weather.gov/afc/" 
                       target="_blank" 
