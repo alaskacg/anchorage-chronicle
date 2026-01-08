@@ -11,52 +11,71 @@ export function AnimatedLogo({
   variant = 'light',
   compact = false,
 }: AnimatedLogoProps) {
-  const sizeClasses = {
-    sm: { height: 28, text: 'text-lg sm:text-xl', sub: 'text-[9px] sm:text-[10px]' },
-    md: { height: 36, text: 'text-xl sm:text-2xl md:text-3xl', sub: 'text-[10px] sm:text-xs' },
-    lg: { height: 48, text: 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl', sub: 'text-xs sm:text-sm' },
-    xl: { height: 56, text: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl', sub: 'text-sm sm:text-base' },
+  const sizeConfig = {
+    sm: { iconSize: 24, titleSize: 14, subSize: 8 },
+    md: { iconSize: 32, titleSize: 18, subSize: 10 },
+    lg: { iconSize: 44, titleSize: 26, subSize: 12 },
+    xl: { iconSize: 56, titleSize: 32, subSize: 14 },
   };
 
-  const gapClass = compact ? 'gap-2' : 'gap-3 sm:gap-4';
+  const config = sizeConfig[size];
+  const gapClass = compact ? 'gap-2' : 'gap-3';
   const titleColorClass = variant === 'dark' ? 'text-primary-foreground' : 'text-foreground';
-  const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/60' : 'text-muted-foreground';
-  const height = sizeClasses[size].height;
+  const subtitleColorClass = variant === 'dark' ? 'text-primary-foreground/70' : 'text-muted-foreground';
+  const accentClass = variant === 'dark' ? 'text-accent' : 'text-accent';
+  const borderClass = variant === 'dark' ? 'border-primary-foreground/30' : 'border-foreground/20';
 
   return (
     <div className={`flex items-center ${gapClass}`}>
-      {/* Clean typographic wordmark with accent line */}
-      <div className="flex items-center gap-1">
-        {/* Accent vertical bar */}
-        <div 
-          className="bg-accent rounded-sm"
-          style={{ width: Math.max(3, height * 0.08), height: height }}
-        />
-        
-        {/* THE text */}
-        <span 
-          className={`font-display font-black uppercase tracking-tighter leading-none ${titleColorClass}`}
-          style={{ fontSize: height * 0.35 }}
+      {/* Iconic mountain peak mark */}
+      <div 
+        className={`relative flex items-center justify-center border-2 ${borderClass}`}
+        style={{ 
+          width: config.iconSize, 
+          height: config.iconSize,
+        }}
+      >
+        {/* Stylized "A" as mountain peak */}
+        <svg 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          className={`${accentClass}`}
+          style={{ width: config.iconSize * 0.7, height: config.iconSize * 0.7 }}
         >
-          THE
-        </span>
+          <path 
+            d="M12 3L3 21H9L12 15L15 21H21L12 3Z" 
+            fill="currentColor"
+          />
+          <path 
+            d="M12 9L9.5 14H14.5L12 9Z" 
+            fill={variant === 'dark' ? 'hsl(var(--primary))' : 'hsl(var(--background))'}
+          />
+        </svg>
       </div>
 
-      {/* Main title */}
+      {/* Text content */}
       {showText && (
-        <div className="min-w-0 flex flex-col justify-center" style={{ height }}>
-          <h1 
-            className={`font-display font-bold tracking-tight leading-none ${titleColorClass}`}
-            style={{ fontSize: height * 0.55 }}
-          >
-            ANCHORAGE CHRONICLE
-          </h1>
+        <div className="flex flex-col justify-center">
+          <div className="flex items-baseline gap-1.5">
+            <span 
+              className={`font-display font-light tracking-wider uppercase ${subtitleColorClass}`}
+              style={{ fontSize: config.subSize + 2 }}
+            >
+              The
+            </span>
+            <h1 
+              className={`font-display font-bold tracking-tight uppercase leading-none ${titleColorClass}`}
+              style={{ fontSize: config.titleSize }}
+            >
+              Anchorage Chronicle
+            </h1>
+          </div>
           {!compact && (
             <p 
-              className={`${subtitleColorClass} font-sans tracking-widest uppercase mt-0.5`}
-              style={{ fontSize: height * 0.2 }}
+              className={`${subtitleColorClass} font-sans tracking-[0.25em] uppercase`}
+              style={{ fontSize: config.subSize }}
             >
-              Alaska's Voice Since 2026
+              Alaska's Independent Voice
             </p>
           )}
         </div>
