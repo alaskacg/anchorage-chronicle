@@ -98,17 +98,14 @@ const Index = () => {
         <div className="container mx-auto px-4 py-8">
           
           {/* Top Row: Weather + Quick Headlines */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-            {/* Weather Inlay + Windy Map + Tide Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            {/* Weather Inlay + Windy Map */}
             <div className="lg:col-span-5 space-y-4">
               <AnimatedNewsColumn delay={100}>
                 <WeatherInlay />
               </AnimatedNewsColumn>
               <AnimatedNewsColumn delay={125}>
-                <WindyMapEmbed compact height="200px" className="shadow-sm" />
-              </AnimatedNewsColumn>
-              <AnimatedNewsColumn delay={150}>
-                <TideChart />
+                <WindyMapEmbed compact height="320px" className="shadow-sm" />
               </AnimatedNewsColumn>
             </div>
 
@@ -184,6 +181,13 @@ const Index = () => {
               </AnimatedNewsColumn>
             </div>
           </div>
+
+          {/* Full-width Tide Chart */}
+          <AnimatedNewsColumn delay={175}>
+            <div className="mb-6">
+              <TideChart compact />
+            </div>
+          </AnimatedNewsColumn>
 
           {/* Primary Ad */}
           <AnimatedNewsColumn delay={250}>
