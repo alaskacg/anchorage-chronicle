@@ -67,7 +67,11 @@ function generateTideData(): TideData {
   };
 }
 
-export function TideChart() {
+interface TideChartProps {
+  compact?: boolean;
+}
+
+export function TideChart({ compact = false }: TideChartProps) {
   const [tideData, setTideData] = useState<TideData | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -86,6 +90,70 @@ export function TideChart() {
 
   const TrendIcon = tideData.current.trend === 'rising' ? ArrowUp : 
                     tideData.current.trend === 'falling' ? ArrowDown : Waves;
+
+  if (compact) {
+    return (
+      <Card className="bg-card border-border overflow-hidden">
+        <CardContent className="p-0">
+          <div className="flex flex-col sm:flex-row">
+            {/* Header + Current */}
+            <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-secondary/5 border-b sm:border-b-0 sm:border-r border-border sm:min-w-[200px]">
+              <Anchor className="h-4 w-4 text-secondary shrink-0" />
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-sans">Cook Inlet</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-display font-bold text-foreground">
+                    {tideData.current.height}
+                  </span>
+                  <span className="text-xs text-muted-foreground">ft</span>
+                  <div className={`flex items-center gap-0.5 ml-1 px-1.5 py-0.5 rounded text-[10px] font-sans ${
+                    tideData.current.trend === 'rising' 
+                      ? 'bg-secondary/20 text-secondary' 
+                      : tideData.current.trend === 'falling'
+                      ? 'bg-accent/20 text-accent'
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    <TrendIcon className="h-2.5 w-2.5" />
+                    <span className="capitalize hidden xs:inline">{tideData.current.trend}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Today's Tides - Horizontal */}
+            <div className="flex-1 flex items-center justify-around p-3 sm:p-4 gap-2 sm:gap-4 overflow-x-auto">
+              {tideData.tides.map((tide, index) => (
+                <div key={index} className="flex items-center gap-2 shrink-0">
+                  <div className={`w-2 h-2 rounded-full ${
+                    tide.type === 'high' ? 'bg-secondary' : 'bg-accent'
+                  }`} />
+                  <div className="text-center">
+                    <p className="text-[10px] uppercase text-muted-foreground font-sans">
+                      {tide.type === 'high' ? 'High' : 'Low'}
+                    </p>
+                    <p className="text-xs font-display font-semibold text-foreground">{tide.time}</p>
+                    <p className="text-[10px] text-muted-foreground">{tide.height.toFixed(1)}ft</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Conditions - Compact */}
+            <div className="flex items-center gap-4 sm:gap-6 p-3 sm:p-4 border-t sm:border-t-0 sm:border-l border-border bg-muted/30">
+              <div className="text-center">
+                <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-sans">Temp</p>
+                <p className="text-xs font-display font-semibold text-foreground">{tideData.conditions.waterTemp}°F</p>
+              </div>
+              <div className="text-center">
+                <p className="text-[9px] uppercase tracking-wide text-muted-foreground font-sans">Current</p>
+                <p className="text-xs font-display font-semibold text-foreground">{tideData.conditions.currentSpeed}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-card border-border overflow-hidden">
