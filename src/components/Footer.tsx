@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
 
 const sections = [
@@ -39,17 +39,15 @@ export const Footer = forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>
             <p className="font-serif text-xs sm:text-sm text-primary-foreground/80 mb-4">
               Serving Alaska with trusted journalism since 2026. Your source for local, state, and community news.
             </p>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Facebook className="h-3 w-3 sm:h-4 sm:w-4" />
-              </a>
-              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Twitter className="h-3 w-3 sm:h-4 sm:w-4" />
-              </a>
-              <a href="#" className="p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors">
-                <Instagram className="h-3 w-3 sm:h-4 sm:w-4" />
-              </a>
-            </div>
+            <a 
+              href="https://x.com/ancchronicle" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 p-1.5 sm:p-2 bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
+            >
+              <Twitter className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-xs font-sans">@ancchronicle</span>
+            </a>
           </div>
 
           {/* Sections */}
