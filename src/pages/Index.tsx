@@ -113,7 +113,7 @@ const Index = () => {
             </div>
 
             {/* Top Headlines */}
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-7 space-y-4">
               <AnimatedNewsColumn delay={200}>
                 <NewsSectionFrame 
                   title="Top Stories" 
@@ -143,6 +143,43 @@ const Index = () => {
                       variant="numbered"
                     />
                   )}
+                </NewsSectionFrame>
+              </AnimatedNewsColumn>
+
+              {/* Business & Economy - Under Top Stories */}
+              <AnimatedNewsColumn delay={225}>
+                <NewsSectionFrame 
+                  title="Business & Economy" 
+                  icon={<TrendingUp className="h-4 w-4" />}
+                  variant="default"
+                  href="/section/business"
+                >
+                  <BusinessEconomyTicker />
+                  <div className="p-3 sm:p-4">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <h4 className="font-display text-xs sm:text-sm font-bold text-foreground mb-1.5">Economic Outlook</h4>
+                        <ul className="text-[10px] sm:text-xs text-muted-foreground font-sans space-y-0.5">
+                          <li>• Permanent Fund Updates</li>
+                          <li>• Job Market Analysis</li>
+                          <li>• Industry Spotlights</li>
+                        </ul>
+                      </div>
+                      <div className="border-l border-border pl-3 sm:pl-4">
+                        <h4 className="font-display text-xs sm:text-sm font-bold text-foreground mb-1.5">Key Sectors</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {['Oil & Gas', 'Fishing', 'Tourism', 'Mining'].map((industry) => (
+                            <span 
+                              key={industry}
+                              className="text-[9px] sm:text-[10px] font-sans text-muted-foreground py-0.5 px-1.5 bg-muted/50"
+                            >
+                              {industry}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </NewsSectionFrame>
               </AnimatedNewsColumn>
             </div>
@@ -237,62 +274,18 @@ const Index = () => {
           </StaggeredColumnGrid>
 
           {/* Two Column Layout: Main Content + Sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             
             {/* Main Column */}
-            <div className="lg:col-span-2 space-y-8">
-              
-              {/* Business & Economy */}
+            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+
+              {/* Quote */}
               <AnimatedNewsColumn delay={400}>
-                <NewsSectionFrame 
-                  title="Business & Economy" 
-                  icon={<TrendingUp className="h-4 w-4" />}
-                  variant="default"
-                  href="/section/business"
-                >
-                  {/* Business Ticker */}
-                  <BusinessEconomyTicker />
-                  
-                  <div className="p-4 sm:p-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                      <div>
-                        <h4 className="font-display text-sm sm:text-base font-bold text-foreground mb-2">
-                          Alaska Economic Outlook
-                        </h4>
-                        <p className="text-muted-foreground font-serif text-xs sm:text-sm mb-3">
-                          In-depth coverage of Alaska's economy, from oil & gas to tourism, fisheries to emerging industries.
-                        </p>
-                        <ul className="text-[10px] sm:text-xs text-muted-foreground font-sans space-y-1">
-                          <li>• Permanent Fund Updates</li>
-                          <li>• Job Market Analysis</li>
-                          <li>• Small Business Spotlights</li>
-                        </ul>
-                      </div>
-                      <div className="border-t md:border-t-0 md:border-l border-border pt-4 md:pt-0 md:pl-6">
-                        <h4 className="font-display text-xs sm:text-sm font-bold text-foreground mb-2">Key Industries</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-1 gap-1 sm:gap-2">
-                          {['Oil & Gas', 'Commercial Fishing', 'Tourism', 'Mining', 'Healthcare'].map((industry) => (
-                            <div 
-                              key={industry}
-                              className="text-[10px] sm:text-xs font-sans text-muted-foreground py-1 sm:py-1.5 px-2 bg-muted/50 hover:bg-accent/10 hover:text-accent transition-colors cursor-pointer"
-                            >
-                              {industry}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </NewsSectionFrame>
+                <RandomAlaskaQuote variant="featured" />
               </AnimatedNewsColumn>
 
               {/* Decorative Divider */}
               <div className="newspaper-divider" />
-
-              {/* Quote */}
-              <AnimatedNewsColumn delay={450}>
-                <RandomAlaskaQuote variant="featured" />
-              </AnimatedNewsColumn>
 
             </div>
 
