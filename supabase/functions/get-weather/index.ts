@@ -87,6 +87,23 @@ async function fetchRealWeather(city: { name: string; lat: number; lng: number }
   }
 }
 
+// Check if user has admin role
+async function checkAdminRole(supabase: any, userId: string): Promise<boolean> {
+  const { data, error } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .eq('role', 'admin')
+    .maybeSingle()
+  
+  if (error) {
+    console.error('Error checking admin role:', error)
+    return false
+  }
+  
+  return data !== null
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -99,6 +116,48 @@ Deno.serve(async (req) => {
     const updateDb = url.searchParams.get('update') === 'true'
 
     console.log(`Fetching real weather data${city ? ` for ${city}` : ' for all cities'}`)
+
+    // For database updates, require admin authentication
+    if (updateDb) {
+      const authHeader = req.headers.get('Authorization')
+      if (!authHeader?.startsWith('Bearer ')) {
+        return new Response(
+          JSON.stringify({ error: 'Authorization required for database updates' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+      const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!
+      const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
+      })
+
+      // Verify the JWT and get user claims
+      const token = authHeader.replace('Bearer ', '')
+      const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token)
+      
+      if (claimsError || !claimsData?.claims) {
+        console.error('JWT verification failed:', claimsError)
+        return new Response(
+          JSON.stringify({ error: 'Invalid authentication token' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      const userId = claimsData.claims.sub as string
+
+      // Check if user has admin role
+      const isAdmin = await checkAdminRole(supabase, userId)
+      if (!isAdmin) {
+        return new Response(
+          JSON.stringify({ error: 'Admin access required for database updates' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      console.log(`Admin user ${userId} authorized for weather update`)
+    }
 
     // Fetch weather data for requested city or all cities
     let weatherData: Awaited<ReturnType<typeof fetchRealWeather>>[] = []
@@ -126,7 +185,7 @@ Deno.serve(async (req) => {
         .map(r => r.value)
     }
 
-    // Optionally update the database
+    // Update database only if authenticated as admin
     if (updateDb && weatherData.length > 0) {
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!
       const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
