@@ -17,6 +17,7 @@ import { AdBanner } from '@/components/ads/AdBanner';
 import { RandomAlaskaQuote } from '@/components/AlaskaQuote';
 import { Newspaper, MapPin, Building2, Mountain, TrendingUp } from 'lucide-react';
 import featuredImage from '@/assets/featured-anchorage-launch.jpg';
+import EmpireNetwork from '@/components/EmpireNetwork';
 
 interface Article {
   id: string;
@@ -350,6 +351,7 @@ const Index = () => {
             </aside>
           </div>
         </div>
+        <EmpireNetwork currentSite="anchorage-chronicle" />
       </main>
 
       <Footer />
