@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>3D Property Viewer — Alaska Business Empire</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e17;color:#e0e8f0;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden}
+#viewer{width:100vw;height:100vh;display:block}
+#controls{position:fixed;top:16px;right:16px;background:rgba(10,14,23,0.92);border:1px solid rgba(0,180,255,0.3);border-radius:12px;padding:16px;min-width:220px;backdrop-filter:blur(10px);z-index:10}
+#controls h3{font-size:14px;color:#00b4ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+#controls .info{font-size:12px;color:#8899aa;margin:4px 0}
+#controls .stat{color:#00ff88;font-weight:600}
+#controls button{width:100%;margin-top:8px;padding:8px;background:linear-gradient(135deg,#00b4ff22,#00ff8822);border:1px solid #00b4ff44;color:#e0f0ff;border-radius:6px;cursor:pointer;font-size:12px;transition:all 0.2s}
+#controls button:hover{background:linear-gradient(135deg,#00b4ff44,#00ff8844);border-color:#00b4ff}
+#loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:20}
+#loading .spinner{width:48px;height:48px;border:3px solid #00b4ff33;border-top:3px solid #00b4ff;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading .text{font-size:14px;color:#00b4ff}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="viewer"></canvas>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div class="text">Loading 3D Model...</div>
+</div>
+
+<div id="controls">
+  <h3>🏔️ 3D Viewer</h3>
+  <div class="info">Model: <span id="model-name" class="stat">—</span></div>
+  <div class="info">Vertices: <span id="vertex-count" class="stat">—</span></div>
+  <div class="info">Size: <span id="file-size" class="stat">—</span></div>
+  <button onclick="resetCamera()">Reset View</button>
+  <button onclick="toggleWireframe()">Toggle Wireframe</button>
+  <button onclick="toggleAutoRotate()">Auto Rotate</button>
+</div>
+
+<!-- Three.js from CDN -->
+<script src="https://unpkg.com/three@0.170.0/build/three.module.min.js" type="module"></script>
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.170.0/build/three.module.min.js';
+import {OrbitControls} from 'https://unpkg.com/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+import {GLTFLoader} from 'https://unpkg.com/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
+
+const canvas = document.getElementById('viewer');
+const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e17);
+scene.fog = new THREE.FogExp2(0x0a0e17, 0.008);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.set(30, 25, 30);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = false;
+controls.autoRotateSpeed = 0.5;
+controls.maxDistance = 200;
+controls.minDistance = 5;
+
+// Lighting
+const ambient = new THREE.AmbientLight(0x334466, 0.6);
+scene.add(ambient);
+
+const sun = new THREE.DirectionalLight(0xffeedd, 1.5);
+sun.position.set(50, 80, 30);
+sun.castShadow = false;
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0x4488cc, 0.3);
+fill.position.set(-30, 20, -20);
+scene.add(fill);
+
+// Grid floor
+const grid = new THREE.GridHelper(200, 40, 0x003355, 0x001122);
+grid.position.y = -0.1;
+scene.add(grid);
+
+// Star field
+const starGeo = new THREE.BufferGeometry();
+const starPos = new Float32Array(3000);
+for(let i=0;i<3000;i++) starPos[i] = (Math.random()-0.5)*400;
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color:0x446688, size:0.3}));
+scene.add(stars);
+
+let loadedModel = null;
+let wireframeMode = false;
+
+// Load GLB model
+function loadModel(url) {
+  const loader = new GLTFLoader();
+  loader.load(url, (gltf) => {
+    if (loadedModel) scene.remove(loadedModel);
+    loadedModel = gltf.scene;
+    
+    // Center and scale
+    const box = new THREE.Box3().setFromObject(loadedModel);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 30 / maxDim;
+    
+    loadedModel.scale.setScalar(scale);
+    loadedModel.position.sub(center.multiplyScalar(scale));
+    
+    // Count vertices
+    let verts = 0;
+    loadedModel.traverse(child => {
+      if (child.isMesh) {
+        verts += child.geometry.attributes.position.count;
+        child.material.side = THREE.DoubleSide;
+      }
+    });
+    
+    scene.add(loadedModel);
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('vertex-count').textContent = verts.toLocaleString();
+    
+    // Fit camera
+    camera.position.set(size.x * scale * 0.8, size.y * scale * 1.5, size.z * scale * 0.8);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  },
+  (progress) => {
+    if (progress.total) {
+      const pct = Math.round(progress.loaded / progress.total * 100);
+      document.querySelector('#loading .text').textContent = `Loading... ${pct}%`;
+    }
+  },
+  (error) => {
+    console.error('Load error:', error);
+    document.querySelector('#loading .text').textContent = 'Error loading model';
+  });
+}
+
+// Get model URL from query string or default
+const params = new URLSearchParams(window.location.search);
+const modelUrl = params.get('model') || './models/terrain.glb';
+const modelName = params.get('name') || modelUrl.split('/').pop();
+document.getElementById('model-name').textContent = modelName;
+loadModel(modelUrl);
+
+// Global functions
+window.resetCamera = () => {
+  camera.position.set(30, 25, 30);
+  controls.target.set(0, 0, 0);
+  controls.update();
+};
+
+window.toggleWireframe = () => {
+  wireframeMode = !wireframeMode;
+  if (loadedModel) {
+    loadedModel.traverse(child => {
+      if (child.isMesh) child.material.wireframe = wireframeMode;
+    });
+  }
+};
+
+window.toggleAutoRotate = () => {
+  controls.autoRotate = !controls.autoRotate;
+};
+
+// Animate
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  stars.rotation.y += 0.0001;
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
